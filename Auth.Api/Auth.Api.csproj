@@ -1,22 +1,35 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Auth.Api-1f9dbd82-04a3-4c55-a53d-9b49c0724234</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" NoWarn="NU1605" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
+    <Folder Include="wwwroot\Files\Images\Avatars\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Auth.Domain.Core.Logic\Auth.Domain.Core.Logic.csproj" />
+    <ProjectReference Include="..\Auth.Domain.Interface.Logic.Read\Auth.Domain.Interface.Logic.Read.csproj" />
+    <ProjectReference Include="..\Auth.Domain.Interface.Logic.Write\Auth.Domain.Interface.Logic.Write.csproj" />
+    <ProjectReference Include="..\Auth.Infrastructure.Data\Auth.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\Auth.Infrastructure.Logic.External\Auth.Infrastructure.Logic.External.csproj" />
+    <ProjectReference Include="..\Auth.Infrastructure.Logic.Read\Auth.Infrastructure.Logic.Read.csproj" />
+    <ProjectReference Include="..\Auth.Infrastructure.Logic.Validation\Auth.Infrastructure.Logic.Validation.csproj" />
+    <ProjectReference Include="..\Auth.Infrastructure.Logic.Write\Auth.Infrastructure.Logic.Write.csproj" />
   </ItemGroup>
 
 </Project>

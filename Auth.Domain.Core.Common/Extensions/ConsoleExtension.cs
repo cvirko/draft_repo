@@ -1,0 +1,13 @@
+﻿namespace Auth.Domain.Core.Common.Extensions
+{
+    public static class ConsoleExtension 
+    {
+        public static void Errors(params string[] msgs)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            for (int i = 0; i < msgs.Length; i++)
+                Console.Error.WriteLine(msgs[i]);
+            Console.ResetColor();
+        }
+    }
+}

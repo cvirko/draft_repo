@@ -1,25 +1,40 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Auth.Api.BackgroundProcesses;
+using Auth.Api.Configuration;
+using Auth.Api.Middleware;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
-
+builder.Services.RegistrationConfigureSections(builder.Configuration);
+builder.Services.AddCorsCustom();
+builder.AddIoC();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenConfig();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddApiVersioningCustom();
+builder.Services.AddHostedService<InitialWorker>();
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerCustom();
 }
 
-app.UseHttpsRedirection();
+app.UseCorsCustom();
 
-app.UseAuthorization();
+app.UseForwardedHeaders(new()
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+app.UseMiddleware<HandleExceptionsMiddleware>();
+
+app.UseHsts();
+
+app.UseIoC(builder);
+
+app.UseHttpsRedirection();
 
 app.MapControllers();
 

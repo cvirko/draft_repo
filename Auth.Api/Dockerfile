@@ -1,14 +1,28 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Auth.Api/Auth.Api.csproj", "Auth.Api/"]
+COPY ["Auth.Api.Infrastructure.Logic.Write/*.csproj", "Auth.Api.Infrastructure.Logic.Write/"]
+COPY ["Auth.Api.Infrastructure.Logic.Validation/*.csproj", "Auth.Api.Infrastructure.Logic.Validation/"]
+COPY ["Auth.Api.Infrastructure.Logic.Read/*.csproj", "Auth.Api.Infrastructure.Logic.Read/"]
+COPY ["Auth.Api.Infrastructure.Logic.External/*.csproj", "Auth.Api.Infrastructure.Logic.External/"]
+COPY ["Auth.Api.Infrastructure.Data/*.csproj", "Auth.Api.Infrastructure.Data/"]
+COPY ["Auth.Api.Domain.Interface.Logic.Write/*.csproj", "Auth.Api.Domain.Interface.Logic.Write/"]
+COPY ["Auth.Api.Domain.Interface.Logic.Read/*.csproj", "Auth.Api.Domain.Interface.Logic.Read/"]
+COPY ["Auth.Api.Domain.Interface.Logic.External/*.csproj", "Auth.Api.Domain.Interface.Logic.External/"]
+COPY ["Auth.Api.Domain.Interface.Data.Write/*.csproj", "Auth.Api.Domain.Interface.Data.Write/"]
+COPY ["Auth.Api.Domain.Interface.Data.Read/*.csproj", "Auth.Api.Domain.Interface.Data.Read/"]
+COPY ["Auth.Api.Domain.Core.Logic/*.csproj", "Auth.Api.Domain.Core.Logic/"]
+COPY ["Auth.Api.Domain.Core.Data/*.csproj", "Auth.Api.Domain.Core.Data/"]
+COPY ["Auth.Api.Domain.Core.Common/*.csproj", "Auth.Api.Domain.Core.Common/"]
+
 RUN dotnet restore "./Auth.Api/Auth.Api.csproj"
 COPY . .
 WORKDIR "/src/Auth.Api"

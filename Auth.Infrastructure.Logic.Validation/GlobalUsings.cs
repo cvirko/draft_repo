@@ -1,0 +1,11 @@
+﻿global using Auth.Domain.Core.Common.Exceptions;
+global using Auth.Domain.Interface.Logic.Read.Validators;
+global using Auth.Domain.Interface.Data.Read.UOW;
+global using Auth.Domain.Core.Common.Enums;
+global using Auth.Domain.Core.Common.Extensions;
+global using Auth.Infrastructure.Logic.Validation.Services;
+global using Auth.Infrastructure.Logic.Validation.UnitOfWork;
+global using Auth.Domain.Interface.Logic.Read.ModelBuilder.ServiceBuilder;
+global using Auth.Domain.Core.Data.DBEntity;
+global using Auth.Domain.Interface.Logic.Read.Validators.Rules;
+global using Auth.Domain.Core.Common.Consts;

@@ -1,0 +1,42 @@
+﻿[
+  {
+    "StatusName": "HasError",
+    "Text": "Name: {0}, Value: {1}"
+  },
+  {
+    "StatusName": "NotFound",
+    "Text": "Not Found"
+  },
+  {
+    "StatusName": "AccessDenied",
+    "Text": "Access Denied."
+  },
+  {
+    "StatusName": "Invalid",
+    "Text": "Invalid"
+  },
+  {
+    "StatusName": "Length",
+    "Text": "Non-valid length. The length should be between {0} and {1} characters"
+  },
+  {
+    "StatusName": "Format",
+    "Text": "Invalid format"
+  },
+  {
+    "StatusName": "AlreadyOccupied",
+    "Text": "Already Occupied"
+  },
+  {
+    "StatusName": "AlreadyConfirmed",
+    "Text": "Already confirmed"
+  },
+  {
+    "StatusName": "NoAttempts",
+    "Text": "All attempts have already been used"
+  },
+  {
+    "StatusName": "ConfirmMail",
+    "Text": "Please confirm mail"
+  }
+]

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Auth.Domain.Core.Logic\Auth.Domain.Core.Logic.csproj" />
+    <ProjectReference Include="..\Auth.Domain.Interface.Logic.Read\Auth.Domain.Interface.Logic.Read.csproj" />
+  </ItemGroup>
+
+</Project>
