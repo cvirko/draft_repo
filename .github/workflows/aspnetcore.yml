@@ -1,7 +1,7 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: CI/CD for ASP.NET Core 9.0
 
 on:
   push:
@@ -12,17 +12,58 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: Setup .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0
+        dotnet-version: 9.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      
+    - name: Publish the project
+      run: dotnet publish -c Release -o ./publish
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: aspnetcore-app
+        path: ./publish
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: aspnetcore-app
+        path: ./publish
+
+    - name: Copy files to remote Windows machine
+      uses: appleboy/scp-action@v1
+      with:
+        host: ${{ secrets.WINDOWS_HOST }}
+        username: ${{ secrets.WINDOWS_USERNAME }}
+        password: ${{ secrets.WINDOWS_PASSWORD }}
+        port: ${{ secrets.WINDOWS_PORT || 22 }}
+        source: "./publish/*"
+        target: "Z:\\Dima\\MyWork\\Deploy\\MyAspNetCoreAuthApp"
+
+    - name: Restart application on remote Windows machine
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.WINDOWS_HOST }}
+        username: ${{ secrets.WINDOWS_USERNAME }}
+        password: ${{ secrets.WINDOWS_PASSWORD }}
+        port: ${{ secrets.WINDOWS_PORT || 22 }}
+        script: |
+          Stop-Service -Name "MyAspNetCoreAuthAppService" -Force
+          Start-Service -Name "MyAspNetCoreAuthAppService"
