@@ -6,16 +6,13 @@
         {
             
         }
-        public ConfirmTokenCommand(string token, TokenType type, Guid tokenLoginId)
+        public ConfirmTokenCommand(string token, TokenType type)
         {
             Token = token;
             TokenType = type;
-            TokenLoginId = tokenLoginId;
         }
         public string Token { get; set; }
         [JsonIgnore]
         public TokenType TokenType { get; set; }
-        [JsonIgnore]
-        public Guid TokenLoginId { get; set; }
     }
 }

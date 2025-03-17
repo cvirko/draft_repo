@@ -16,7 +16,8 @@ namespace Auth.Infrastructure.Data.Cache
         public float AbsoluteTimeStorageInMinutes => _options.AbsoluteTimeStorageInMinutes;
         public float SlidingTimeStorageInMinutes => _options.SlidingTimeStorageInMinutes;
         public string GetSignUpEmailKey(string email) => string.Format("{0}_SignUpEmail", email);
-
+        public string GetConnectionKey(Guid userId) => string.Format("{0}_Connection", userId);
+        public string GetConnectionKey(string connectionId) => string.Format("{0}_Connection", connectionId);
         public async Task<bool> IsExistDataAsync(string key)
         {
             EmtyCheck(key);

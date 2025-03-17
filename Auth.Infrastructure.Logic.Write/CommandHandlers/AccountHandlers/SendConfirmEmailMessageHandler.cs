@@ -1,5 +1,5 @@
 ﻿using Auth.Domain.Core.Logic.Commands.Account;
-using Auth.Domain.Interface.Logic.External.Mail;
+using Auth.Domain.Interface.Logic.Notification.Mail;
 using Auth.Domain.Interface.Logic.Read.ModelBuilder.ServiceBuilder;
 
 namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
@@ -15,8 +15,7 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
         {
             var tokenData = _token.CreateNumericToken();
             await _dispatcher.ProcessAsync(
-                new UpdateTokenCommand(command.TokenLoginId, command.UserId, tokenData.Token,
-                 TokenType.ConfirmMail));
+                new UpdateTokenCommand(command.UserId, tokenData.Token,TokenType.ConfirmMail, command.UserInfo));
 
             _ = _mail.SendAsync(new()
             {

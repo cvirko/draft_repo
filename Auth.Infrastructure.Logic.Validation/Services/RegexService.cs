@@ -11,6 +11,7 @@ namespace Auth.Infrastructure.Logic.Validation.Services
             {nameof(UnitOfWorkValidationRule.Password),new Range(8, 64) },
             {nameof(UnitOfWorkValidationRule.User),new Range(8, 50) },
             {nameof(UnitOfWorkValidationRule.Token),new Range(6, 50) },
+            {nameof(UnitOfWorkValidationRule.Message),new Range(1, 200) },
             {AppConsts.GLOBALERROR, new Range(1,1) }
         };
         private bool IsInvalid(string input, string pattern) => !Regex.Match(input, pattern).Success;

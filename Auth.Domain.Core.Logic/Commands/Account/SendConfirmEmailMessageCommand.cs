@@ -5,6 +5,6 @@
         public string Email { get; set; }
         public string UserName { get; set; }
         [JsonIgnore]
-        public Guid TokenLoginId { get; set; }
+        public string UserInfo { get; set; }
     }
 }

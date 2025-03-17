@@ -19,7 +19,7 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidato
             if (!RuleFor(p => p.Email).Email().IsExist(login))
                 return GetErrors();
 
-            var token = await _uow.Users().GetUserTokenAsync(login.UserId, login.UserId, TokenType.Reset);
+            var token = await _uow.Users().GetUserTokenAsync(login.UserId, TokenType.Reset);
             RuleFor(p => p.Email).Email().IsDelayGone(command.Email, token?.CreationDate, _mailOptions.DelayBetweenMessagesInMinutes);
 
             return GetErrors();

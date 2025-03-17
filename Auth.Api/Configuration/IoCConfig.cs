@@ -1,10 +1,10 @@
 ﻿using Auth.Domain.Core.Common.Tools.Configurations;
 using Auth.Infrastructure.Data;
 using Auth.Infrastructure.Logic.External;
+using Auth.Infrastructure.Logic.Notification;
 using Auth.Infrastructure.Logic.Read;
 using Auth.Infrastructure.Logic.Validation;
 using Auth.Infrastructure.Logic.Write;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 
 namespace Auth.Api.Configuration
@@ -26,13 +26,15 @@ namespace Auth.Api.Configuration
             builder.Services.RegistrationValidationService();
             builder.Services.RegistrationReadModelService();
             builder.Services.RegistrationWriteService();
-            builder.Services.RegistrationExternalService(); 
-            builder.Services.AddAuthentication(builder.Configuration.Get<TokenOptions>(AppConsts.TOKEN_SETTING_SECTION_NAME),
+            builder.Services.RegistrationExternalService();
+            builder.Services.RegistrationNotificationService();
+            builder.Services.AddAuthentication(
+                builder.Configuration.Get<TokenOptions>(AppConsts.TOKEN_SETTING_SECTION_NAME),
                 builder.Configuration.Get<AuthOptions>(AppConsts.AUTH_SETTING_SECTION_NAME));
             builder.Services.RegistrationDBService(builder.Environment, builder.Configuration.Get<ConnectionOptions>(AppConsts.CONNECTION_SECTION_NAME));
 
         }
-        public static void UseIoC(this IApplicationBuilder app, IHostApplicationBuilder builder)
+        public static void UseIoC(this WebApplication app, IHostApplicationBuilder builder)
         {
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -40,6 +42,9 @@ namespace Auth.Api.Configuration
                 builder.Configuration.Get<FilesOptions>(AppConsts.FILE_SECTION_NAME).AvatarsStorePath)),
                 RequestPath = $"/{AppConsts.AVATARS_PATH}"
             });
+
+            app.UseNotification();
+
             app.UseAuthentication();
 
             app.UseAuthorization();

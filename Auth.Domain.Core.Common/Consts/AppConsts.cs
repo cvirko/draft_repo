@@ -9,6 +9,7 @@ namespace Auth.Domain.Core.Common.Consts
         public const string ALLOWED_SPECIFIC_ORIGIN = "AllowedOrigins";
         public const string SEPARATOR = "_";
         public const string GLOBALERROR = "general";
+        public const string HUBNAME = "hub";
 
         public const string TOKEN_SETTING_SECTION_NAME = "Token";
         public const string AUTH_SETTING_SECTION_NAME = "Authentication";

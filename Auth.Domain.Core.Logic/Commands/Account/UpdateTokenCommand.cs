@@ -3,15 +3,15 @@
     public class UpdateTokenCommand : Command
     {
         public UpdateTokenCommand() { }
-        public UpdateTokenCommand(Guid tokenLoginId, Guid userId, string token, TokenType type)
+        public UpdateTokenCommand(Guid userId, string token, TokenType type, string userLoginInfo)
         {
             Token = token;
             Type = type;
             UserId = userId;
-            TokenLoginId = tokenLoginId;
+            UserLoginInfo = userLoginInfo;
         }
-        public Guid TokenLoginId { get; set; }
         public TokenType Type { get; set; }
         public string Token { get; set; }
+        public string UserLoginInfo { get; set; }
     }
 }

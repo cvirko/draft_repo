@@ -18,5 +18,7 @@
         public const string CLAIM_TYPE_NAME_LOGINID = "ID";
         public const string CLAIM_TYPE_NAME_LOGIN_DATE = "LoginDate";
         public const string CLAIM_TYPE_NAME_LOGIN_TOKENID = "LoginTokenID";
+
+        public const string OAUTH_FACEBOOK_BASE_URL = "https://graph.facebook.com/v22.0";
     }
 }

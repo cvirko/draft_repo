@@ -8,7 +8,8 @@ namespace Auth.Domain.Interface.Data.Read.Repository
         Task<bool> IsExistEmailAsync(string email);
         Task<UserLogin> GetLoginByUserIdAsync(Guid userId, ulong loginId);
         Task<UserLogin> GetLoginByEmailAsync(string email);
-        Task<UserToken> GetUserTokenAsync(Guid tokenId, Guid userId, TokenType type);
+        Task<UserToken> GetUserTokenAsync(string userInfo, Guid userId, TokenType type);
+        Task<UserToken> GetUserTokenAsync(Guid userId, TokenType type);
         Task<User> GetUserAsync(Guid userId);
         Task<bool> IsExistUserAsync(Guid userId);
         Task<UserToken[]> GetUserTokensAsync(Guid userId);

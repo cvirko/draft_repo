@@ -1,6 +1,7 @@
 ﻿using Auth.Domain.Core.Logic.Commands.Account;
 using Auth.Domain.Core.Logic.Models.DTOs.User;
 using Auth.Domain.Core.Logic.Models.Tokens;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace Auth.Infrastructure.Logic.Read.Mappers
@@ -18,7 +19,7 @@ namespace Auth.Infrastructure.Logic.Read.Mappers
                 AvatarURL = Path.Combine(avatarsURL,  from.UserId.ToAvatarName())
             };
         }
-        public LoginDTO Map(UserLogin from)
+        public LoginDTO Map(UserLogin from, HttpRequest request)
         {
             if (from == null) return default;
             return new()
@@ -28,10 +29,10 @@ namespace Auth.Infrastructure.Logic.Read.Mappers
                 UserName = from.User.UserName,
                 LoginId = from.LoginId,
                 LoginDate = DateTimeExtension.Get(),
-                TokenLoginId = Guid.NewGuid(),
+                UserLoginInfo = request.GetUserInfo(),
             };
         }
-        public LoginDTO Map(SignUpInCacheCommand from, RoleType role = RoleType.User)
+        public LoginDTO Map(SignUpInCacheCommand from, HttpRequest request, RoleType role = RoleType.User)
         {
             if (from == null) return default;
             return new()
@@ -41,10 +42,10 @@ namespace Auth.Infrastructure.Logic.Read.Mappers
                 UserName = from.UserName,
                 LoginId = from.LoginId,
                 LoginDate = DateTimeExtension.Get(),
-                TokenLoginId = Guid.NewGuid(),
+                UserLoginInfo = request.GetUserInfo(),
             };
         }
-        public LoginDTO Map(ClaimsPrincipal from)
+        public LoginDTO Map(ClaimsPrincipal from, HttpRequest request)
         {
             if (from == null) return default;
             return new()
@@ -54,10 +55,10 @@ namespace Auth.Infrastructure.Logic.Read.Mappers
                 UserName = from.GetFullName(),
                 LoginId = from.GetLoginId(),
                 LoginDate = from.GetDate(),
-                TokenLoginId = from.GetTokenLoginId(),
+                UserLoginInfo = request.GetUserInfo(),
             };
         }
-        public LoginDTO Map(SocialData from, UserLogin login)
+        public LoginDTO Map(SocialData from, UserLogin login, HttpRequest request)
         {
             if (from == null) return default;
             return new()
@@ -66,7 +67,7 @@ namespace Auth.Infrastructure.Logic.Read.Mappers
                 UserName = from.Name ,
                 LoginId = login?.LoginId ?? default,
                 LoginDate = DateTimeExtension.Get(),
-                TokenLoginId = Guid.NewGuid(),
+                UserLoginInfo = request.GetUserInfo(),
             };
         }
     }

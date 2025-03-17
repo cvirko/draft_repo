@@ -1,6 +1,7 @@
 ﻿using Auth.Domain.Core.Logic.Models.DTOs.User;
 using Auth.Domain.Core.Logic.Models.Tokens;
-using Auth.Domain.Interface.Logic.External.Socila;
+using Auth.Domain.Interface.Logic.External.Social;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace Auth.Infrastructure.Logic.Read.ModelBuilders.AccountBuilders
@@ -25,17 +26,16 @@ namespace Auth.Infrastructure.Logic.Read.ModelBuilders.AccountBuilders
                     throw new NotImplementedException($"{social} no implemented");
             }
         }
-        public async Task<LoginDTO> GetLoginAsync(string email)
+        public async Task<LoginDTO> GetLoginAsync(string email, HttpRequest request)
         {
             var login = await _uow.Users().GetLoginByEmailAsync(email);
-            return _mapper.Map(login);
+            return _mapper.Map(login, request);
         }
-        public async Task<LoginDTO> GetLoginAsync(ClaimsPrincipal user)
+        public async Task<LoginDTO> GetLoginAsync(ClaimsPrincipal user, HttpRequest request)
         {
             var login = await _uow.Users().GetLoginByUserIdAsync(user.GetUserId(),user.GetLoginId());
-            var result = _mapper.Map(login);
+            var result = _mapper.Map(login, request);
             result.LoginDate = user.GetDate();
-            result.TokenLoginId = user.GetTokenLoginId();
             return result;
         }
     }

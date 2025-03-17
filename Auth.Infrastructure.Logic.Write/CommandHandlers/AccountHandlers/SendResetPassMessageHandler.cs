@@ -1,6 +1,6 @@
 ﻿using Auth.Domain.Core.Logic.Commands.Account;
 using Auth.Domain.Interface.Data.Read.UOW;
-using Auth.Domain.Interface.Logic.External.Mail;
+using Auth.Domain.Interface.Logic.Notification.Mail;
 using Auth.Domain.Interface.Logic.Read.ModelBuilder.ServiceBuilder;
 
 namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
@@ -18,8 +18,7 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
             var tokenData = _token.CreateNumericToken();
             var login = await _uow.Users().GetLoginByEmailAsync(command.Email);
             await _dispatcher.ProcessAsync(
-                new UpdateTokenCommand(login.UserId, login.UserId, tokenData.Token,
-                 TokenType.Reset));
+                new UpdateTokenCommand(login.UserId, tokenData.Token, TokenType.Reset, command.UserInfo));
             
 
             _ = _mail.SendAsync(new()

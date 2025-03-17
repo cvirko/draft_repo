@@ -11,6 +11,8 @@
         Task SetDataAsync<T>(string key, T value, TimeSpan? absoluteTime = null, TimeSpan? slidingTime = null);
         Task RemoveDataAsync(string key);
         string GetSignUpEmailKey(string email);
+        string GetConnectionKey(Guid userId);
+        string GetConnectionKey(string connectionId);
         Task<bool> IsExistDataAsync(string key);
     }
 }

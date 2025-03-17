@@ -1,5 +1,5 @@
 ﻿using Auth.Domain.Core.Logic.Models.Tokens;
-using Auth.Domain.Interface.Logic.External.Socila;
+using Auth.Domain.Interface.Logic.External.Social;
 using Google.Apis.Auth;
 using Microsoft.Extensions.Options;
 

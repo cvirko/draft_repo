@@ -7,7 +7,6 @@ using Auth.Domain.Interface.Logic.Read.ModelBuilder.ServiceBuilder;
 
 namespace Auth.Api.Controllers.Write
 {
-    //[Authorize(AuthConsts.AUTHENTICATION_SCHEME)]
     [ApiVersion(1.0, Deprecated = false)]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -40,14 +39,14 @@ namespace Auth.Api.Controllers.Write
         public async Task<ActionResult<TokenData>> SignUp([FromBody] SignUpInCacheCommand command)
         {
             await _command.ProcessAsync(command);
-            var login = _mapper.Map(command);
+            var login = _mapper.Map(command, Request);
 
             await _command.ProcessAsync(new SendConfirmEmailMessageCommand
             {
                 Email = command.Email,
-                UserName = login.UserName,
+                UserName = command.UserName,
                 UserId = login.UserId,
-                TokenLoginId = login.TokenLoginId
+                UserInfo = Request.GetUserInfo()
             });
             return Ok(_token.CreateEmailConfirmationToken(login, command.Email));
         }
@@ -60,7 +59,6 @@ namespace Auth.Api.Controllers.Write
             {
                 Email = User.GetUserEmail(),
                 UserName = User.GetFullName(),
-                TokenLoginId = User.GetTokenLoginId(),
             });
             return Ok();
         }
@@ -71,11 +69,10 @@ namespace Auth.Api.Controllers.Write
         public async Task<ActionResult<TokenData[]>> MailConfirm([FromBody] ConfirmTokenCommand command)
         {
             command.TokenType = TokenType.ConfirmMail;
-            command.TokenLoginId = User.GetTokenLoginId();
             await ProcessAsync(command);
             var createCommand = new CreateAccountFromCacheCommand(User.GetUserEmail());
             await ProcessAsync(createCommand);
-            var login = await _account.GetLoginAsync(User.GetUserEmail());
+            var login = await _account.GetLoginAsync(User.GetUserEmail(), Request);
             return await GetRefreshTokenAsync(login);
         }
 
@@ -85,7 +82,7 @@ namespace Auth.Api.Controllers.Write
         public async Task<ActionResult<TokenData[]>> Login([FromBody] SignInCommand command)
         {
             await ProcessAsync(command);
-            var login = await _account.GetLoginAsync(command.Login);
+            var login = await _account.GetLoginAsync(command.Login, Request);
             return await GetRefreshTokenAsync(login);
         }
 
@@ -94,8 +91,8 @@ namespace Auth.Api.Controllers.Write
         [HttpPost]
         public async Task<ActionResult<TokenData[]>> RefreshToken()
         {
-            await ProcessAsync(new ConfirmTokenCommand(User.GetTokenId(), TokenType.Refresh, User.GetTokenLoginId()));
-            var login = await _account.GetLoginAsync(User);
+            await ProcessAsync(new ConfirmRefreshTokenCommand(User.GetTokenId(),Request.GetUserInfo()));
+            var login = await _account.GetLoginAsync(User, Request);
             return await GetRefreshTokenAsync(login);
         }
 
@@ -108,7 +105,7 @@ namespace Auth.Api.Controllers.Write
             
             await ProcessAsync(new SignInSocialCommand { Info = socialInfo});
 
-            var login = await _account.GetLoginAsync(socialInfo.Email);
+            var login = await _account.GetLoginAsync(socialInfo.Email, Request);
             return await GetRefreshTokenAsync(login);
         }
         [AllowAnonymous]
@@ -120,7 +117,7 @@ namespace Auth.Api.Controllers.Write
 
             await ProcessAsync(new SignInSocialCommand { Info = socialInfo });
 
-            var login = await _account.GetLoginAsync(socialInfo.Email);
+            var login = await _account.GetLoginAsync(socialInfo.Email, Request);
             return await GetRefreshTokenAsync(login);
         }
         [AllowAnonymous]
@@ -128,9 +125,9 @@ namespace Auth.Api.Controllers.Write
         [HttpPost]
         public async Task<ActionResult<TokenData>> ForgotPassword([FromBody] SendResetPassMessageCommand command)
         {
+            command.UserInfo = Request.GetUserInfo();
             await ProcessAsync(command);
-            var login = await _account.GetLoginAsync(command.Email);
-            login.TokenLoginId = login.UserId;
+            var login = await _account.GetLoginAsync(command.Email, Request);
             var response = _token.CreateEmailConfirmationToken(login,
                 command.Email, TokenType.ConfirmPassword);
             return Ok(response);
@@ -151,9 +148,8 @@ namespace Auth.Api.Controllers.Write
         public async Task<ActionResult<TokenData>> ForgotPassword([FromBody] ConfirmTokenCommand command)
         {
             command.TokenType = TokenType.Reset;
-            command.TokenLoginId = User.GetTokenLoginId();
             await ProcessAsync(command);
-            var response = _token.CreateEmailConfirmationToken(_mapper.Map(User), 
+            var response = _token.CreateEmailConfirmationToken(_mapper.Map(User, Request), 
                 User.GetUserEmail(), TokenType.Reset);
             return Ok(response);
         }
@@ -171,12 +167,11 @@ namespace Auth.Api.Controllers.Write
         {
             var tokenId = Guid.NewGuid();
             if (login is null)
-                login = _mapper.Map(User);
-            await _command.ProcessAsync(new UpdateTokenCommand(login.TokenLoginId, login.UserId, tokenId.ToString(), TokenType.Refresh));
-            var refresh = _token.CreateRefreshTokens(login, tokenId);
+                login = _mapper.Map(User, Request);
+            await _command.ProcessAsync(new UpdateRefreshTokenCommand(login.UserLoginInfo, login.UserId, tokenId.ToString()));
             return Ok(new TokenData[]
             {
-                refresh,
+               _token.CreateRefreshTokens(login, tokenId),
                _token.CreateAccessTokens(login)
             });
         }

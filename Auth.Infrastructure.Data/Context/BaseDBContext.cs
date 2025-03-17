@@ -20,7 +20,7 @@
             });
             builder.Entity<UserToken>(entity =>
             {
-                entity.HasKey(p => p.UserTokenId);
+                entity.HasKey(p => new { p.UserId, p.TokenType, p.UserInfo });
             });
         }
     }

@@ -24,12 +24,6 @@ namespace Auth.Domain.Core.Common.Extensions
             if (date == null) return DateTimeExtension.Get();
             return DateTime.Parse(date);
         }
-        public static Guid GetTokenLoginId(this ClaimsPrincipal User)
-        {
-            var tokenLoginId = User.FindFirst(AuthConsts.CLAIM_TYPE_NAME_LOGIN_TOKENID)?.Value;
-            if (tokenLoginId == null) return Guid.Empty;
-            return Guid.Parse(tokenLoginId);
-        }
         public static ulong GetLoginId(this ClaimsPrincipal User)
         {
             var loginId = User.FindFirst(AuthConsts.CLAIM_TYPE_NAME_LOGINID)?.Value;

@@ -11,7 +11,7 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
         private readonly FailedAccessOptions _options = option.Value;
         public async Task HandleAsync(UpdateTokenCommand command)
         {
-            var userToken = await GetOrAddAsync(command.TokenLoginId, command.UserId, command.Type);
+            var userToken = await GetOrAddAsync(command.UserId, command.Type,command.UserLoginInfo);
 
             userToken.Token = command.Token;
             userToken.CreationDate = DateTimeExtension.Get();
@@ -19,14 +19,17 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
             userToken.IsConfirmed = false;
             await _uow.SaveAsync();
         }
-        private async Task<UserToken> GetOrAddAsync(Guid tokenLoginId, Guid userId, TokenType type)
+        private async Task<UserToken> GetOrAddAsync(Guid userId, TokenType type, string info)
         {
-            var userToken = await _uow.Users().GetUserTokenAsync(tokenLoginId, userId, type);
+            var userToken = await _uow.Users().GetUserTokenAsync(userId, type);
             if (userToken != null)
+            {
                 return userToken;
+            }
+                
             userToken = new()
             {
-                UserTokenId = tokenLoginId,
+                UserInfo = info,
                 TokenType = type,
                 UserId = userId,
             };

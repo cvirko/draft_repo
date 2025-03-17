@@ -1,5 +1,5 @@
 ﻿using Auth.Domain.Core.Logic.Models.Tokens;
-using Auth.Domain.Interface.Logic.External.Socila;
+using Auth.Domain.Interface.Logic.External.Social;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Text.Json;
@@ -11,15 +11,14 @@ namespace Auth.Infrastructure.Logic.External.Social
     {
         private readonly AuthOptions _options = options.Value;
         private readonly HttpClient _httpClient = httpClientFactory.CreateClient();
-        private const string OAUTH_BASE_URL = "https://graph.facebook.com/v22.0";
-        private const string TOKEN_VALIDATION_URL = "{0}/debug_token?input_token={1}&access_token={2}|{3}";
-        private const string USER_INFO_URL = "{0}/me?fields=id,name,email,picture&access_token={1}";
+        private const string TOKEN_VALIDATION_URL = "/debug_token?input_token={0}&access_token={1}|{2}";
+        private const string USER_INFO_URL = "/me?fields=id,name,email,picture&access_token={0}";
         public async Task<SocialData> GetTokenInfoAsync(string token)
         {
             if (!await IsValidAsync(token))
                 return null;
 
-            var formatedUrl = string.Format(USER_INFO_URL, OAUTH_BASE_URL, token);
+            var formatedUrl = string.Format(USER_INFO_URL, token);
             var userInfoResponse = await _httpClient.GetAsync(formatedUrl);
             if (!userInfoResponse.IsSuccessStatusCode) return null;
 
@@ -34,7 +33,7 @@ namespace Auth.Infrastructure.Logic.External.Social
         }
         private async Task<bool> IsValidAsync(string token)
         {
-            var formatedUrl = string.Format(TOKEN_VALIDATION_URL, OAUTH_BASE_URL, token, 
+            var formatedUrl = string.Format(TOKEN_VALIDATION_URL, token, 
                 _options.Facebook.ClientId, _options.Facebook.ClientSecret);
 
             var validationResponse = await _httpClient.GetAsync(formatedUrl);
@@ -45,7 +44,7 @@ namespace Auth.Infrastructure.Logic.External.Social
 
             return tokenValidation.Data?.IsValid ?? false;
         }
-        public class FacebookUserInfo
+        private class FacebookUserInfo
         {
             [JsonProperty("id")]
             public string Id { get; set; }
@@ -56,13 +55,13 @@ namespace Auth.Infrastructure.Logic.External.Social
             [JsonProperty("picture")]
             public FacebookPicture Picture { get; set; }
         }
-        public class FacebookTokenValidation
+        private class FacebookTokenValidation
         {
             [JsonProperty("data")]
             public FacebookTokenValidationData Data { get; set; }
         }
 
-        public class FacebookTokenValidationData
+        private class FacebookTokenValidationData
         {
             [JsonProperty("is_valid")]
             public bool IsValid { get; set; }
@@ -79,13 +78,13 @@ namespace Auth.Infrastructure.Logic.External.Social
             [JsonProperty("scopes")]
             public string[] Scopes { get; set; }
         }
-        public class FacebookPicture
+        private class FacebookPicture
         {
             [JsonProperty("data")]
             public FacebookPictureData Data { get; set; }
         }
 
-        public class FacebookPictureData
+        private class FacebookPictureData
         {
             [JsonProperty("url")]
             public string Url { get; set; }

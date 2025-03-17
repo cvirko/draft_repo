@@ -11,7 +11,7 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
         public async Task HandleAsync(ConfirmTokenCommand command)
         {
             var userToken = await _uow.Users()
-                .GetUserTokenAsync(command.TokenLoginId, command.UserId, command.TokenType);
+                .GetUserTokenAsync(command.UserId, command.TokenType);
             _uowValidationRule.SetFieldName(nameof(command.Token));
             if (_uowValidationRule.Token().IsMatch(command.Token, userToken))
             {

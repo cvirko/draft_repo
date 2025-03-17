@@ -17,10 +17,9 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidato
             RuleFor(p => p.Email).Email().IsLengthFormatValid(command.Email);
             RuleFor(p => p.UserName).Name().IsLengthFormatValid(command.UserName);
             RuleFor().User().IsLengthFormatValid(command.UserId.ToString());
-            RuleFor().User().IsLengthFormatValid(command.TokenLoginId.ToString());
             if (IsInvalid()) return GetErrors();
 
-            var token = await _uow.Users().GetUserTokenAsync(command.TokenLoginId, command.UserId, TokenType.ConfirmMail);
+            var token = await _uow.Users().GetUserTokenAsync(command.UserId, TokenType.ConfirmMail);
             if (!RuleFor(p => p.Email).Email()
                 .IsDelayGone(command.Email, token?.CreationDate, _mailOptions.DelayBetweenMessagesInMinutes))
                 return GetErrors();

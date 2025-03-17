@@ -53,8 +53,9 @@ namespace Auth.Api.Controllers.Write
             {
                 Email = command.Email,
                 UserName = User.GetFullName(),
+                UserInfo = Request.GetUserInfo()
             });
-            return Ok(_token.CreateEmailConfirmationToken(_mapper.Map(User), command.Email));
+            return Ok(_token.CreateEmailConfirmationToken(_mapper.Map(User, Request), command.Email));
         }
 
         [Authorize(AuthConsts.IS_USER)]

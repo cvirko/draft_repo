@@ -1,6 +1,8 @@
 ﻿using Asp.Versioning.ApiExplorer;
+using Auth.Domain.Interface.Logic.Notification.Sockets.Hubs;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using SignalRSwaggerGen;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
@@ -19,14 +21,21 @@ namespace Auth.Api.Configuration.Swagger
             options.AddSecurityRequirement(new() { { jwtSecurityScheme, Array.Empty<string>() } });
             GeneratedXMLDescription(options);
             GeneratedExampleFilters(options);
-
+            options.AddSignalRSwaggerGen(op => SignalROptions(op));
             foreach (var description in provider.ApiVersionDescriptions)
             {
 
                 options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
             }
         }
-
+        private SignalRSwaggerGenOptions SignalROptions(SignalRSwaggerGenOptions option)
+        {
+            option.ScanAssemblies(typeof(IChatHubClient).Assembly);
+            option.HubPathFunc = (string hubName) => $"/{AppConsts.HUBNAME}"; ;
+            option.DisregardOtherSecurityRequirements = true;
+            option.AutoDiscover = SignalRSwaggerGen.Enums.AutoDiscover.MethodsAndParams;
+            return option;
+        }
         private void GeneratedXMLDescription(SwaggerGenOptions options)
         {
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

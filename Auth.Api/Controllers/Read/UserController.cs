@@ -2,7 +2,6 @@
 using Auth.Domain.Core.Logic.Models.DTOs.User;
 using Auth.Domain.Interface.Logic.Read.ModelBuilder.AccountBuilders;
 using Auth.Domain.Interface.Logic.Read.ModelBuilder.ServiceBuilder;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Auth.Api.Controllers.Read

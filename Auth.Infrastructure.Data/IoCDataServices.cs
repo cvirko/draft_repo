@@ -98,7 +98,10 @@ namespace Auth.Infrastructure.Data
                     {
                         b.MigrationsAssembly(migratioName);
                         b.CommandTimeout(60);
-                        b.EnableRetryOnFailure();
+                        b.EnableRetryOnFailure(
+                            maxRetryCount: 2,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null);
                     });
                 if (isDevelopment)
                     options.EnableSensitiveDataLogging();
@@ -108,8 +111,6 @@ namespace Auth.Infrastructure.Data
         }
         private static void RegistrationAccountingService(this IServiceCollection services)
         {
-            services.AddSingleton<AuthDBContext>();
-            services.AddSingleton<AuthReadDBContext>();
             services.AddScoped<ICacheRepository, CacheRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             services.AddScoped<IUnitOfWorkRead, UnitOfWork.UnitOfWorkRead>();

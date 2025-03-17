@@ -8,7 +8,6 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidato
         public override Task<IEnumerable<ValidationError>> ValidateAsync(UpdateTokenCommand command)
         {
             RuleFor().User().IsLengthFormatValid(command.UserId.ToString());
-            RuleFor().User().IsLengthFormatValid(command.TokenLoginId.ToString());
             RuleFor().Token().IsLengthFormatValid(command.Token);
             return Task.FromResult<IEnumerable<ValidationError>>(GetErrors());
         }

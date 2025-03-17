@@ -16,6 +16,7 @@ namespace Auth.Infrastructure.Logic.Validation.UnitOfWork
         private IUserValidationRule _userRule = default;
         private ITokenValidationRule _tokenRule = default;
         private IFileValidationRule _fileRule = default;
+        private IMessageValidationRule _messageRule = default;
 
         public void SetFieldName(string field) => fieldName = field.ToLowerFirstChar();
         public IEmailValidationRule Email() => _emailRule ?? new EmailValidationRule(_regex, AddError);
@@ -24,7 +25,7 @@ namespace Auth.Infrastructure.Logic.Validation.UnitOfWork
         public IUserValidationRule User() => _userRule ?? new UserValidationRule(_regex, AddError);
         public ITokenValidationRule Token() => _tokenRule ?? new TokenValidationRule(_regex, AddError);
         public IFileValidationRule File() => _fileRule ?? new FileValidationRule(AddError);
-
+        public IMessageValidationRule Message() => _messageRule ?? new MessageValidationRule(_regex, AddError);
         public void AddError(ErrorStatus status, params object[] values)
         {
             if (IsValid())

@@ -22,7 +22,7 @@ namespace Auth.Infrastructure.Logic.External.Tokens
                 new (AuthConsts.CLAIM_TYPE_NAME_USER_ID, user.UserId.ToString()),
                 new (AuthConsts.CLAIM_TYPE_NAME_LOGINID, user.LoginId.ToString()),
                 new (AuthConsts.CLAIM_TYPE_NAME_ACCESS, user.Role.ToString()),
-                new (AuthConsts.CLAIM_TYPE_NAME_LOGIN_TOKENID, user.TokenLoginId.ToString()),
+                new (AuthConsts.CLAIM_TYPE_NAME_LOGIN_TOKENID, user.UserLoginInfo.ToString()),
                 new (AuthConsts.CLAIM_TYPE_NAME_LOGIN_DATE, user.LoginDate.ToString()),
                 new (ClaimTypes.Name, user.UserName)
                 ];
@@ -49,7 +49,7 @@ namespace Auth.Infrastructure.Logic.External.Tokens
                 new (AuthConsts.CLAIM_TYPE_NAME_USER_ID, user.UserId.ToString()),
                 new (AuthConsts.CLAIM_TYPE_NAME_ACCESS, user.Role.ToString()),
                 new (AuthConsts.CLAIM_TYPE_NAME_LOGINID, user.LoginId.ToString()),
-                new (AuthConsts.CLAIM_TYPE_NAME_LOGIN_TOKENID, user.TokenLoginId.ToString()),
+                new (AuthConsts.CLAIM_TYPE_NAME_LOGIN_TOKENID, user.UserLoginInfo.ToString()),
                 new (ClaimTypes.Name, user.UserName),
                 new (ClaimTypes.Email, email)
                 ];

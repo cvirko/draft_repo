@@ -1,13 +1,15 @@
-﻿using Auth.Domain.Core.Common.Extensions;
+﻿using Auth.Domain.Core.Common.Consts;
+using Auth.Domain.Core.Common.Extensions;
+using Auth.Domain.Core.Common.Tools.Configurations;
 using Auth.Domain.Core.Logic.Models.Mail;
-using Auth.Domain.Interface.Logic.External.Mail;
+using Auth.Domain.Interface.Logic.Notification.Mail;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;
 using System.Text;
 
-namespace Auth.Infrastructure.Logic.External.Mails
+namespace Auth.Infrastructure.Logic.Notification.Mails
 {
-    internal class SMTPMailService: IMailService
+    internal class SMTPMailService : IMailService
     {
         private readonly SmtpClient _smtpClient;
         private readonly MailOptions _config;

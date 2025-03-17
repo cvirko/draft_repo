@@ -31,11 +31,20 @@ namespace Auth.Infrastructure.Data.Repository
             return await _context.UsersTokens
                 .Where(p => p.UserId == userId).ToArrayAsync();
         }
-        public async Task<UserToken> GetUserTokenAsync(Guid tokenId, Guid userId, TokenType type)
+        public async Task<UserToken> GetUserTokenAsync(string userInfo, Guid userId, TokenType type)
         {
             return await _context.UsersTokens
-                .FirstOrDefaultAsync(p => p .UserTokenId == tokenId 
-                && p.UserId == userId && p.TokenType == type);
+                .FirstOrDefaultAsync(p => 
+                       p.UserId == userId 
+                    && p.UserInfo == userInfo
+                    && p.TokenType == type);
+        }
+        public async Task<UserToken> GetUserTokenAsync(Guid userId, TokenType type)
+        {
+            return await _context.UsersTokens
+                .FirstOrDefaultAsync(p =>
+                       p.UserId == userId
+                    && p.TokenType == type);
         }
         public async Task<User> GetUserAsync(Guid userId)
         {

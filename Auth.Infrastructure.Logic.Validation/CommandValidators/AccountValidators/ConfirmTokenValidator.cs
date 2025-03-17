@@ -12,18 +12,12 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidato
         public override async Task<IEnumerable<ValidationError>> ValidateAsync(ConfirmTokenCommand command)
         {
             RuleFor(p => p.Token).Token().IsLengthFormatValid(command.Token);
-            if (command.TokenType == TokenType.ConfirmMail ||
-                command.TokenType == TokenType.Reset)
-                RuleFor(p => p.Token).Token().IsOnlyNumbers(command.Token);
+            RuleFor(p => p.Token).Token().IsOnlyNumbers(command.Token);
             RuleFor().User().IsLengthFormatValid(command.UserId.ToString());
-            RuleFor().User().IsLengthFormatValid(command.TokenLoginId.ToString());
 
             if (IsInvalid()) return GetErrors();
-            var token = await _uow.Users().GetUserTokenAsync(command.TokenLoginId, command.UserId, command.TokenType);
-            var exp = command.TokenType == TokenType.Refresh 
-                ? _tokenService.RefreshTokenExpiresTimeInMinutes 
-                : _tokenService.ConfirmationTokenExpiresTimeInMinutes;
-            RuleFor(p => p.Token).Token().IsHaveAttempts(token, exp);
+            var token = await _uow.Users().GetUserTokenAsync(command.UserId, command.TokenType);
+            RuleFor(p => p.Token).Token().IsHaveAttempts(token, _tokenService.ConfirmationTokenExpiresTimeInMinutes);
 
             return GetErrors();
         }

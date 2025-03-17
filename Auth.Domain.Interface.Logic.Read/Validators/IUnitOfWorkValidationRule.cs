@@ -12,6 +12,7 @@ namespace Auth.Domain.Interface.Logic.Read.Validators
         IUserValidationRule User();
         ITokenValidationRule Token();
         IFileValidationRule File();
+        IMessageValidationRule Message();
         void AddError(ErrorStatus status,
             params object[] values);
         bool IsValid();

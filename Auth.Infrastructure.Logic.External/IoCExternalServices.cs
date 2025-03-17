@@ -2,12 +2,10 @@
 using Auth.Domain.Core.Logic.Models.DTOs.User;
 using Auth.Domain.Interface.Logic.External.Auth;
 using Auth.Domain.Interface.Logic.External.Files;
-using Auth.Domain.Interface.Logic.External.Mail;
 using Auth.Domain.Interface.Logic.External.Randomiz;
-using Auth.Domain.Interface.Logic.External.Socila;
+using Auth.Domain.Interface.Logic.External.Social;
 using Auth.Infrastructure.Logic.External.Hashers;
 using Auth.Infrastructure.Logic.External.Files;
-using Auth.Infrastructure.Logic.External.Mails;
 using Auth.Infrastructure.Logic.External.Randomiz;
 using Auth.Infrastructure.Logic.External.Social;
 using Auth.Infrastructure.Logic.External.Tokens;
@@ -23,16 +21,19 @@ namespace Auth.Infrastructure.Logic.External
     {
         public static void RegistrationExternalService(this IServiceCollection services)
         {
+            services.AddHttpClient<IFileService, FileService>();
+            services.AddHttpClient<IAuthFacebook, AuthFacebook>(option =>
+                option.BaseAddress = new Uri(AuthConsts.OAUTH_FACEBOOK_BASE_URL));
             services.AddScoped<IPasswordHasher<UserDTO>, PasswordHasher<UserDTO>>();
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
-            services.AddSingleton<IMailService, SMTPMailService>();
             services.AddScoped<IRandomService, RandomService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IFileService, FileService>();
-            services.AddHttpClient();
-
+            
             services.AddScoped<IAuthGoogle, AuthGoogle>();
             services.AddScoped<IAuthFacebook, AuthFacebook>();
+            
+            
         }
         public static void AddAuthentication(this IServiceCollection services, TokenOptions tokenO, AuthOptions auth)
         {

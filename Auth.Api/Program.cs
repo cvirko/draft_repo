@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.HttpOverrides;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.RegistrationConfigureSections(builder.Configuration);
-builder.Services.AddCorsCustom();
 builder.AddIoC();
+builder.Services.AddCorsCustom();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenConfig();

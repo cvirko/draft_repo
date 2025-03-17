@@ -1,6 +1,6 @@
 ﻿using Auth.Domain.Core.Logic.Models.Tokens;
 
-namespace Auth.Domain.Interface.Logic.External.Socila
+namespace Auth.Domain.Interface.Logic.External.Social
 {
     public interface IAuthFacebook
     {
