@@ -34,8 +34,10 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.RabbitMQ
 
         public void Dispose()
         {
-            var chanelTask = Channel?.CloseAsync();
-            var connectionTask = Connection?.CloseAsync();
+            if (Connection is null) return;
+
+            Task chanelTask = Channel?.CloseAsync() ?? Task.CompletedTask;
+            Task connectionTask = Connection?.CloseAsync();
             Task.WhenAll(chanelTask, connectionTask).ContinueWith(_ =>
             {
                 Channel?.Dispose();

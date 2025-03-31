@@ -39,13 +39,3 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
-// rabbitMQ  RabbitMQ поддерживает несколько протоколов: AMQP 0-9-1 Ч открытый протокол
-//  microservice
-// grpc
-//   Apache Kafka, RabbitMQ, Azure Service Bus
-// video stream
-//phone sms
-//PAYMENT
-// AI
-//elasticsearch
-//wpf
