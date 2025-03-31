@@ -1,24 +1,24 @@
 ﻿using Auth.Client.ConsoleApp.Consts;
-using Auth.Client.ConsoleApp.Interfaces;
-using Auth.Domain.Core.Logic.Models.Hub;
-using Auth.Domain.Interface.Logic.Notification.Sockets.Hubs;
+using Auth.Client.ConsoleApp.Interfaces.Api;
+using Auth.Client.ConsoleApp.Interfaces.Hubs;
+using Auth.Client.ConsoleApp.Models.Hubs;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 
-namespace Auth.Client.ConsoleApp.Services.SiganlR
+namespace Auth.Client.ConsoleApp.Services.SignalR
 {
     internal class SignalRClient : IDisposable
     {
-        public SignalRClient(string uri, IUnitOfWorkServerApi unitOfWorkServer)
+        public SignalRClient(string uri, IUnitOfWorkApi unitOfWorkServer)
         {
             Create(uri, unitOfWorkServer);
         }
         private HubConnection hubConnection = default;
-        private void Create(string uri, IUnitOfWorkServerApi server)
+        private void Create(string uri, IUnitOfWorkApi server)
         {
             hubConnection = new HubConnectionBuilder()
-                
+
                 .WithUrl(uri, option =>
                 {
                     option.AccessTokenProvider = () => Task.FromResult(server.Account().Token);

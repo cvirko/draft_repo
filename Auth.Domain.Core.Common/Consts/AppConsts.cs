@@ -20,8 +20,10 @@ namespace Auth.Domain.Core.Common.Consts
         public const string USER_FAILED_ACCESS_SECTION_NAME = "UserFailedAccess";
         public const string TIME_ZONE_SECTION_NAME = "TimeZoneOffsetInHours";
         public const string SENDGRID_SECTION_NAME = "SendGrid";
+        public const string RABBITMQ_SECTION_NAME = "RabbitMQ";
 
-        public static readonly string SWAGGER_DESCRIPTION = $"This is the Swagger documentation for the {Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName).Split(".")[0]} Management API.";
-        public static readonly string SWAGGER_TITLE = $"{Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName).Split(".")[0]} API";
+        public static readonly string APP_NAME = Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName).Split(".")[0];
+        public static readonly string SWAGGER_DESCRIPTION = $"This is the Swagger documentation for the {APP_NAME} Management API.";
+        public static readonly string SWAGGER_TITLE = $"{APP_NAME} API";
     }
 }

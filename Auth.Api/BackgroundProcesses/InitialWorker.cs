@@ -1,14 +1,18 @@
 ﻿using Auth.Domain.Core.Logic.Commands.Admin;
+using Auth.Domain.Interface.Logic.Notification.Sockets.RabbitMQ;
 
 namespace Auth.Api.BackgroundProcesses
 {
-    public class InitialWorker(IServiceScopeFactory scopeFactory) : BackgroundService
+    public class InitialWorker(IServiceScopeFactory scopeFactory, IRabbitMQListener rabbitMQListener) : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
+        private readonly IRabbitMQListener _rabbitMQListener = rabbitMQListener;
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _ = Task.Run(() => InfiniteLoopAsync(RemoveUserTokensAsync,TimeSpan.FromDays(1), stoppingToken), stoppingToken);
+            await _rabbitMQListener.ReceiveAsync<string>(AppConsts.APP_NAME, OutPutConsole);
             await Task.FromResult(stoppingToken);
+            ConsoleExtension.Errors("InitialWorker ends");
         }
         private async Task RemoveUserTokensAsync(CancellationToken stoppingToken)
         {
@@ -17,6 +21,11 @@ namespace Auth.Api.BackgroundProcesses
                 var command = scope.ServiceProvider.GetRequiredService<ICommandHandler<RemoveUselessTokensCommand>>();
                 await command.HandleAsync(new RemoveUselessTokensCommand { Token = stoppingToken });
             }
+        }
+        private Task OutPutConsole<T>(T message)
+        {
+            ConsoleExtension.Info(message, ConsoleColor.Green);
+            return Task.CompletedTask;
         }
         private async Task InfiniteLoopAsync(Func<CancellationToken, Task> func, TimeSpan repiet, CancellationToken stoppingToken)
         {

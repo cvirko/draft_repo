@@ -1,6 +1,6 @@
-﻿namespace Auth.Client.ConsoleApp.Interfaces
+﻿namespace Auth.Client.ConsoleApp.Interfaces.Api
 {
-    public interface IChatApiService
+    internal interface IChatApiService
     {
         Task JoinAsync(string name, string token);
         Task LeaveAsync(string name, string token);

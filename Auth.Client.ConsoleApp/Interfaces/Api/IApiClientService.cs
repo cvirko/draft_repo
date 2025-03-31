@@ -1,6 +1,6 @@
-﻿namespace Auth.Client.ConsoleApp.Interfaces
+﻿namespace Auth.Client.ConsoleApp.Interfaces.Api
 {
-    public interface IServerClientService : IDisposable
+    internal interface IApiClientService : IDisposable
     {
         Task<T> PostAsync<T, V>(V body, string requesUri, string token = null);
         Task PostAsync<V>(V body, string requesUri, string token = null);

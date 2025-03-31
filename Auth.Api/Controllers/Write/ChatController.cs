@@ -1,5 +1,6 @@
 ﻿using Auth.Domain.Core.Common.Exceptions;
 using Auth.Domain.Interface.Logic.Notification.Sockets;
+using Auth.Domain.Interface.Logic.Notification.Sockets.RabbitMQ;
 using Auth.Domain.Interface.Logic.Read.Validators;
 
 namespace Auth.Api.Controllers.Write
@@ -8,10 +9,12 @@ namespace Auth.Api.Controllers.Write
     [ApiVersion(1.0, Deprecated = false)]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ChatController(IChatMessageService chat, IUnitOfWorkValidationRule validate) : ControllerBase
+    public class ChatController(IChatMessageService chat, IUnitOfWorkValidationRule validate,
+        IRabbitMQRequest rabbitMQRequest) : ControllerBase
     {
         private readonly IChatMessageService _chat = chat;
         private readonly IUnitOfWorkValidationRule _validate = validate;
+        private readonly IRabbitMQRequest _rabbitMQRequest = rabbitMQRequest;
 
         [Authorize(AuthConsts.IS_USER)]
         [Route("Join/{name}")]
@@ -23,6 +26,8 @@ namespace Auth.Api.Controllers.Write
                 throw new ForbiddenException(_validate.GetErrors());
             }
             await _chat.AddUserToGroupAsync(name, User.GetUserId());
+            await _rabbitMQRequest.SendAsync(AppConsts.APP_NAME,
+                string.Format( "{0} Join To Chat: {1}",User.GetFullName(), name));
             return Ok();
         }
         [Authorize(AuthConsts.IS_USER)]
@@ -35,6 +40,8 @@ namespace Auth.Api.Controllers.Write
                 throw new ForbiddenException(_validate.GetErrors());
             }
             await _chat.RemoveUserFromGroupAsync(name, User.GetUserId());
+            await _rabbitMQRequest.SendAsync(AppConsts.APP_NAME,
+                string.Format("{0} Leave Chat: {1}", User.GetFullName(), name));
             return Ok();
         }
         [Authorize(AuthConsts.IS_USER)]
@@ -55,6 +62,8 @@ namespace Auth.Api.Controllers.Write
                 UserId = User.GetUserId(),
                 UserName = User.GetFullName()
             });
+            await _rabbitMQRequest.SendAsync(AppConsts.APP_NAME,
+                string.Format("{0}-{1} Send MSG: {2}", User.GetFullName(), name, message));
             return Ok();
         }
     }

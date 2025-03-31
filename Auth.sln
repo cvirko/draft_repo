@@ -52,7 +52,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.Infrastructure.Logic.N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.Domain.Interface.Logic.Notification", "Auth.Domain.Interface.Logic.Notification\Auth.Domain.Interface.Logic.Notification.csproj", "{4F705B5E-4802-490A-A8FB-62B71780FA9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.Client.ConsoleApp", "Auth.Client.ConsoleApp\Auth.Client.ConsoleApp.csproj", "{AB57B9F9-8DBA-4BC2-B15E-FFFEC35CBA9E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.Client.ConsoleApp", "Auth.Client.ConsoleApp\Auth.Client.ConsoleApp.csproj", "{33329DA7-DB42-CBB6-91CC-CADB47B14CA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,10 +124,10 @@ Global
 		{4F705B5E-4802-490A-A8FB-62B71780FA9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F705B5E-4802-490A-A8FB-62B71780FA9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F705B5E-4802-490A-A8FB-62B71780FA9A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB57B9F9-8DBA-4BC2-B15E-FFFEC35CBA9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB57B9F9-8DBA-4BC2-B15E-FFFEC35CBA9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB57B9F9-8DBA-4BC2-B15E-FFFEC35CBA9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB57B9F9-8DBA-4BC2-B15E-FFFEC35CBA9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33329DA7-DB42-CBB6-91CC-CADB47B14CA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33329DA7-DB42-CBB6-91CC-CADB47B14CA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33329DA7-DB42-CBB6-91CC-CADB47B14CA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33329DA7-DB42-CBB6-91CC-CADB47B14CA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

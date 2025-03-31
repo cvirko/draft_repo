@@ -1,6 +1,6 @@
-﻿namespace Auth.Client.ConsoleApp.Models
+﻿namespace Auth.Client.ConsoleApp.Models.ConsoleMessages
 {
-    internal struct Message(bool isVisible, string text)
+    internal struct SMessage(bool isVisible, string text)
     {
         public bool IsVisible { get; set; } = isVisible;
         public string Text { get; init; } = text;

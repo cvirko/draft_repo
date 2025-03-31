@@ -1,15 +1,14 @@
 ﻿using Auth.Client.ConsoleApp.Consts;
-using Auth.Client.ConsoleApp.Interfaces;
-using Auth.Domain.Core.Common.Exceptions;
-using Auth.Domain.Core.Common.Extensions;
-using Auth.Domain.Core.Logic.Commands.Account;
-using Auth.Domain.Core.Logic.Models.Tokens;
+using Auth.Client.ConsoleApp.Interfaces.Api;
+using Auth.Client.ConsoleApp.Models.Commands.Account;
+using Auth.Client.ConsoleApp.Models.Exceptions;
+using Auth.Client.ConsoleApp.Models.Tokens;
 
-namespace Auth.Client.ConsoleApp.Services.Api
+namespace Auth.Client.ConsoleApp.Services.Api.Controllers
 {
-    public class AccountService(IServerClientService client) : IAccountService
+    internal class AccountService(IApiClientService client) : IAccountService
     {
-        private IServerClientService _client = client;
+        private IApiClientService _client = client;
         private readonly CancellationTokenSource cts = new CancellationTokenSource();
         private Dictionary<Requests, string> requestPath = new()
         {
@@ -21,8 +20,8 @@ namespace Auth.Client.ConsoleApp.Services.Api
         private DateTime expiresDate;
         private string refreshToken;
         private string accessToken;
-        public string Token => accessToken ?? throw new Exception(" Token not found");
 
+        public string Token => accessToken ?? throw new Exception(" Token not found");
         public void Dispose()
         {
             cts.Dispose();
@@ -59,28 +58,28 @@ namespace Auth.Client.ConsoleApp.Services.Api
             expiresDate = tokens[1].Expires;
             refreshToken = tokens[0].Token;
         }
-        
+
         private async Task UpdateTokenWorkerAsync()
         {
             while (!cts.Token.IsCancellationRequested)
             {
-                int expires = Convert.ToInt32( (expiresDate - DateTimeExtension.Get())
+                int expires = Convert.ToInt32((expiresDate - DateTime.UtcNow)
                     .TotalMinutes - 0.5);
                 await Task.Delay(1000 * 60 * expires, cts.Token);
-                Console.WriteLine("{0} Update token {1}", 
+                Console.WriteLine("{0} Update token {1}",
                     ConsoleConst.YELLOW, ConsoleConst.NORMAL);
                 await RefreshTokenAsync();
             }
         }
         private async Task CreateUserAsync(SignInCommand command)
         {
-            var request = new SignUpInCacheCommand()
+            var request = new SignUpCommand()
             {
                 Email = command.Login,
                 UserName = "BotTest",
                 Password = command.Password,
             };
-            TokenData token = await _client.PostAsync<TokenData, SignUpInCacheCommand>(request, requestPath[Requests.SignUp]);
+            TokenData token = await _client.PostAsync<TokenData, SignUpCommand>(request, requestPath[Requests.SignUp]);
             accessToken = token.Token;
             expiresDate = token.Expires;
             await ConfirmEmailUserAsync();
@@ -106,10 +105,10 @@ namespace Auth.Client.ConsoleApp.Services.Api
         {
             try
             {
-                var tokens = await _client.PostAsync<TokenData[],string>(string.Empty, requestPath[Requests.Refresh], refreshToken);
+                var tokens = await _client.PostAsync<TokenData[], string>(string.Empty, requestPath[Requests.Refresh], refreshToken);
                 if (tokens == null)
                 {
-                    Console.WriteLine("{0} No Refresh token{1}", ConsoleConst.RED,ConsoleConst.NORMAL);
+                    Console.WriteLine("{0} No Refresh token{1}", ConsoleConst.RED, ConsoleConst.NORMAL);
                 }
                 accessToken = tokens[1].Token;
                 expiresDate = tokens[1].Expires;

@@ -5,11 +5,10 @@ using Auth.Domain.Core.Logic.Models.Hub;
 using Auth.Domain.Interface.Data.Read.Cache;
 using Auth.Domain.Interface.Logic.Notification.Sockets;
 using Auth.Domain.Interface.Logic.Notification.Sockets.Hubs;
-using Auth.Infrastructure.Logic.Notification.Sockets.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-namespace Auth.Infrastructure.Logic.Notification.Sockets
+namespace Auth.Infrastructure.Logic.Notification.Sockets.Hubs
 {
     internal class ChatMessageService(ILogger<ChatMessageService> logger,
         IHubContext<ChatHub, IChatHubClient> hub, ICacheRepository cache) : IChatMessageService

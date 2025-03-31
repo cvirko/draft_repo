@@ -1,7 +1,9 @@
 ﻿using Auth.Domain.Core.Common.Extensions;
 using Auth.Domain.Core.Common.Tools.Configurations;
 using Auth.Domain.Interface.Data.Read.Cache;
+using Auth.Domain.Interface.Data.Read.Locks;
 using Auth.Infrastructure.Data.Cache;
+using Auth.Infrastructure.Data.Locks;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -111,6 +113,7 @@ namespace Auth.Infrastructure.Data
         }
         private static void RegistrationAccountingService(this IServiceCollection services)
         {
+            services.AddSingleton<IAsyncSynchronization, AsyncSynchronization>();
             services.AddScoped<ICacheRepository, CacheRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
             services.AddScoped<IUnitOfWorkRead, UnitOfWork.UnitOfWorkRead>();

@@ -20,6 +20,8 @@ namespace Auth.Api.Configuration
             service.Add<MailOptions>(configuration, AppConsts.MAIL_SECTION_NAME);
             service.Add<FailedAccessOptions>(configuration, AppConsts.USER_FAILED_ACCESS_SECTION_NAME);
             service.Add<AuthOptions>(configuration, AppConsts.AUTH_SETTING_SECTION_NAME);
+            service.Add<RabbitMQOptions>(configuration, AppConsts.RABBITMQ_SECTION_NAME);
+
         }
         public static void AddIoC(this IHostApplicationBuilder builder)
         {

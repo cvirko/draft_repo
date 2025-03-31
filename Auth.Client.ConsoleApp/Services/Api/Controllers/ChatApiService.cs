@@ -1,10 +1,10 @@
-﻿using Auth.Client.ConsoleApp.Interfaces;
+﻿using Auth.Client.ConsoleApp.Interfaces.Api;
 
-namespace Auth.Client.ConsoleApp.Services.Api
+namespace Auth.Client.ConsoleApp.Services.Api.Controllers
 {
-    public class ChatApiService(IServerClientService client) : IChatApiService
+    internal class ChatApiService(IApiClientService client) : IChatApiService
     {
-        private IServerClientService _client = client;
+        private IApiClientService _client = client;
 
         private Dictionary<Requests, string> requestPath = new()
         {

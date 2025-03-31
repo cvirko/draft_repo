@@ -9,5 +9,11 @@
                 Console.Error.WriteLine(msgs[i]);
             Console.ResetColor();
         }
+        public static void Info<T>(T msg, ConsoleColor color = ConsoleColor.Green)
+        {
+            Console.ForegroundColor = color;
+            Console.Error.WriteLine(msg);
+            Console.ResetColor();
+        }
     }
 }

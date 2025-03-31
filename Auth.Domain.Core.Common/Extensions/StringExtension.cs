@@ -8,6 +8,14 @@ namespace Auth.Domain.Core.Common.Extensions
         {
             return Encoding.UTF8.GetBytes(value);
         }
+        public static string ToUTF8String(this byte[] value)
+        {
+            return Encoding.UTF8.GetString(value);
+        }
+        public static string ToUTF8String(this ReadOnlyMemory<byte> value)
+        {
+            return value.ToArray().ToUTF8String();
+        }
         public static string ToLowerFirstChar(this string value)
         {
             if (string.IsNullOrEmpty(value) || char.IsLower(value[0]))

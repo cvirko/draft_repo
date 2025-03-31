@@ -1,12 +1,14 @@
-﻿using Auth.Client.ConsoleApp.Interfaces;
-using Auth.Domain.Core.Common.Exceptions;
+﻿using Auth.Client.ConsoleApp.Interfaces.Api;
+using Auth.Client.ConsoleApp.Models.Exceptions;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Auth.Client.ConsoleApp.Services.Api
 {
-    internal class ServerClientService(string uri): IServerClientService
+    internal class ApiClientService(string uri) : IApiClientService
     {
         private HttpClient _client = new HttpClient()
         {
@@ -71,7 +73,8 @@ namespace Auth.Client.ConsoleApp.Services.Api
         }
         private async Task<T> ConvertAsync<T>(HttpContent content)
         {
-            return JsonConvert.DeserializeObject<T>(await content.ReadAsStringAsync());
+            var modelString = await content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(modelString);
         }
         private async Task EnsureSuccessStatusCodeAsync(HttpResponseMessage response)
         {

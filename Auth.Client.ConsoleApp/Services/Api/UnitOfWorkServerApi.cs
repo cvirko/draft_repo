@@ -1,9 +1,11 @@
-﻿using Auth.Client.ConsoleApp.Interfaces;
+﻿using Auth.Client.ConsoleApp.Interfaces.Api;
+using Auth.Client.ConsoleApp.Services.Api.Controllers;
+
 namespace Auth.Client.ConsoleApp.Services.Api
 {
-    internal class UnitOfWorkServerApi(string uri) : IUnitOfWorkServerApi
+    internal class UnitOfWorkServerApi(string uri) : IUnitOfWorkApi
     {
-        private readonly IServerClientService _context = new ServerClientService(uri);
+        private readonly IApiClientService _context = new ApiClientService(uri);
 
         private IAccountService _account;
         private IChatApiService _chat;

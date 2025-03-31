@@ -1,9 +1,10 @@
 ﻿using Auth.Domain.Core.Common.Consts;
 using Auth.Domain.Interface.Logic.Notification.Mail;
 using Auth.Domain.Interface.Logic.Notification.Sockets;
+using Auth.Domain.Interface.Logic.Notification.Sockets.RabbitMQ;
 using Auth.Infrastructure.Logic.Notification.Mails;
-using Auth.Infrastructure.Logic.Notification.Sockets;
 using Auth.Infrastructure.Logic.Notification.Sockets.Hubs;
+using Auth.Infrastructure.Logic.Notification.Sockets.RabbitMQ;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Routing;
@@ -17,8 +18,10 @@ namespace Auth.Infrastructure.Logic.Notification
         public static void RegistrationNotificationService(this IServiceCollection services)
         {
             services.AddSingleton<IMailService, SMTPMailService>();
+            services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
+            services.AddSingleton<IRabbitMQListener, RabbitMQListener>();
+            services.AddScoped<IRabbitMQRequest, RabbitMQRequest>();
             services.AddScoped<IChatMessageService, ChatMessageService>();
-
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(30);

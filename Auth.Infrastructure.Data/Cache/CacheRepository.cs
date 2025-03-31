@@ -1,16 +1,16 @@
 ﻿using Auth.Domain.Core.Common.Tools.Configurations;
 using Auth.Domain.Interface.Data.Read.Cache;
+using Auth.Domain.Interface.Data.Read.Locks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Collections.Concurrent;
 
 namespace Auth.Infrastructure.Data.Cache
 {
-    internal class CacheRepository(IDistributedCache cache, IOptionsSnapshot<CacheOptions> options) : ICacheRepository
+    internal class CacheRepository(IDistributedCache cache, IOptionsSnapshot<CacheOptions> options, IAsyncSynchronization locks) : ICacheRepository
     {
         private IDistributedCache _cache = cache;
-        private static ConcurrentDictionary<object, SemaphoreSlim> _locks = new();
+        private IAsyncSynchronization _locks = locks;
         private readonly CacheOptions _options = options.Value;
 
         public float AbsoluteTimeStorageInMinutes => _options.AbsoluteTimeStorageInMinutes;
@@ -38,7 +38,7 @@ namespace Auth.Infrastructure.Data.Cache
             var result = await GetDataAsync<T>(key);
             if (result == null)
             {
-                var mylock = await GetLockAsync(key);
+                var mylock = await _locks.GetLockAsync(key);
                 try
                 {
                     result = await GetDataAsync<T>(key);
@@ -61,7 +61,7 @@ namespace Auth.Infrastructure.Data.Cache
             var result = await GetDataAsync<T>(key);
             if (result == null)
             {
-                var mylock = await GetLockAsync(key);
+                var mylock = await _locks.GetLockAsync(key);
                 try
                 {
                     result = await GetDataAsync<T>(key);
@@ -85,7 +85,7 @@ namespace Auth.Infrastructure.Data.Cache
             var result = await GetDataAsync<T>(key);
             if (result == null)
             {
-                var mylock = await GetLockAsync(key);
+                var mylock = await _locks.GetLockAsync(key);
                 try
                 {
                     result = await GetDataAsync<T>(key);
@@ -106,7 +106,7 @@ namespace Auth.Infrastructure.Data.Cache
 
         public async Task SetDataAsync<T>(string key, T value, TimeSpan? absoluteTime = null, TimeSpan? slidingTime = null)
         {
-            var mylock = await GetLockAsync(key);
+            var mylock = await _locks.GetLockAsync(key);
             try
             {
                 await SetAsync(key, value, absoluteTime, slidingTime);
@@ -139,12 +139,7 @@ namespace Auth.Infrastructure.Data.Cache
                 option.SetAbsoluteExpiration(slidingTime.Value);
             return option;
         }
-        private async Task<SemaphoreSlim> GetLockAsync(string key)
-        {
-            SemaphoreSlim mylock = _locks.GetOrAdd(key, k => new SemaphoreSlim(1, 1));
-            await mylock.WaitAsync();
-            return mylock;
-        }
+        
         private void EmtyCheck(string key)
         {
             if (string.IsNullOrEmpty(key))
