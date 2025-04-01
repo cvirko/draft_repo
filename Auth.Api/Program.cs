@@ -39,9 +39,3 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
-
-//phone sms
-//PAYMENT
-// AI
-//elasticsearch
-//wpf
