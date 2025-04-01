@@ -39,3 +39,10 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+// grpc
+// video stream
+//phone sms
+//PAYMENT
+// AI
+//elasticsearch
+//wpf
