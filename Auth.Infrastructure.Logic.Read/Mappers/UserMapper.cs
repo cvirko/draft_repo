@@ -16,7 +16,7 @@ namespace Auth.Infrastructure.Logic.Read.Mappers
                 Role = from.Role,
                 UserId = from.UserId,
                 UserName = from.UserName,
-                AvatarURL = Path.Combine(avatarsURL,  from.UserId.ToAvatarName())
+                AvatarURL = Path.Combine(avatarsURL,  from.UserId.ToFileName())
             };
         }
         public LoginDTO Map(UserLogin from, HttpRequest request)

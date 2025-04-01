@@ -38,12 +38,32 @@ namespace Auth.Api.Configuration
         }
         public static void UseIoC(this WebApplication app, IHostApplicationBuilder builder)
         {
+            var option = builder.Configuration.Get<FilesOptions>(AppConsts.FILE_SECTION_NAME);
+            string webRootPath = Path.Combine(builder.Environment.ContentRootPath,"wwwroot");
+
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, 
-                builder.Configuration.Get<FilesOptions>(AppConsts.FILE_SECTION_NAME).AvatarsStorePath)),
-                RequestPath = $"/{AppConsts.AVATARS_PATH}"
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(webRootPath, option.AvatarsStorePath)),
+                RequestPath = AppConsts.AVATARS_PATH
             });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(webRootPath, option.VideoStorePath)),
+                RequestPath = AppConsts.VIDEO_PATH,
+                OnPrepareResponse = ctx =>
+                {
+                    if (!ctx.Context.User.Identity.IsAuthenticated)
+                    {
+                        ctx.Context.Response.StatusCode = 401;
+                        ctx.Context.Response.ContentLength = 0;
+                        ctx.Context.Response.Body = Stream.Null;
+                    }
+                }
+            }
+            );
 
             app.UseNotification();
 

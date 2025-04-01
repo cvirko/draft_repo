@@ -4,7 +4,8 @@ namespace Auth.Domain.Core.Common.Consts
 {
     public class AppConsts
     {
-        public const string AVATARS_PATH = "Avatars";
+        public const string AVATARS_PATH = "/Avatars";
+        public const string VIDEO_PATH = "/Video";
         public const int ERRORS_MAX_LENGTH = 5; 
         public const string ALLOWED_SPECIFIC_ORIGIN = "AllowedOrigins";
         public const string SEPARATOR = "_";

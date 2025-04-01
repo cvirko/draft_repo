@@ -10,7 +10,7 @@ namespace Auth.Api.BackgroundProcesses
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _ = Task.Run(() => InfiniteLoopAsync(RemoveUserTokensAsync,TimeSpan.FromDays(1), stoppingToken), stoppingToken);
-            await _rabbitMQListener.ReceiveAsync<string>(AppConsts.APP_NAME, OutPutConsole);
+            await TryRunAsync();
             await Task.FromResult(stoppingToken);
             ConsoleExtension.Errors("InitialWorker ends");
         }
@@ -26,6 +26,18 @@ namespace Auth.Api.BackgroundProcesses
         {
             ConsoleExtension.Info(message, ConsoleColor.Green);
             return Task.CompletedTask;
+        }
+        private async Task TryRunAsync()
+        {
+            try
+            {
+                await _rabbitMQListener.ReceiveAsync<string>(AppConsts.APP_NAME, OutPutConsole);
+            }
+            catch (Exception ex)
+            {
+                ConsoleExtension.Errors($"Failed to run: {ex.Source} {ex.Message}");
+                Console.Error.WriteLine(ex);
+            }
         }
         private async Task InfiniteLoopAsync(Func<CancellationToken, Task> func, TimeSpan repiet, CancellationToken stoppingToken)
         {

@@ -18,7 +18,7 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.UserHandlers
             _uow.Remove(user);
             _uow.Remove(tokens);
             await _uow.SaveAsync();
-            _file.DeleteFile(_option.AvatarsStorePath,command.UserId.ToAvatarName());
+            _file.DeleteFile(_option.AvatarsStorePath,command.UserId.ToFileName());
         }
     }
 }

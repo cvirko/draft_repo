@@ -66,5 +66,16 @@ namespace Auth.Api.Controllers.Write
             await ProcessAsync(command);
             return Ok();
         }
+        [Authorize(AuthConsts.IS_USER)]
+        [Route("Update/Video")]
+        [HttpPost]
+        [DisableRequestSizeLimit]
+        [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
+        public async Task<ActionResult> UpdateVideo(IFormFile file)
+        {
+            using (var stream = file.OpenReadStream())
+                await ProcessAsync(new UpdateVideoCommand(stream, file.ContentType));
+            return Ok();
+        }
     }
 }

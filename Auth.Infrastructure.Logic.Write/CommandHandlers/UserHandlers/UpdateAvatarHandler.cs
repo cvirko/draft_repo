@@ -15,7 +15,7 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.UserHandlers
         public Task HandleAsync(UpdateAvatarCommand command)
         {
             var avatar = _image.ReSizePng(command.Avatar);
-            _file.ReWriteFile(_options.AvatarsStorePath, command.UserId.ToAvatarName(), avatar);
+            _file.ReWriteFile(_options.AvatarsStorePath, command.UserId.ToFileName(), avatar);
             return Task.CompletedTask;
         }
     }

@@ -24,5 +24,20 @@
                     AddError(ErrorStatus.AccessDenied); return false;
             }
         }
+        public bool IsVideo(Stream file, string contentType)
+        {
+            if (!IsNotEmpty(file))
+                return false;
+            switch (contentType)
+            {
+                case MIMEType.Mpeg:
+                case MIMEType.Mp4:
+                case MIMEType.Ogg:
+                case MIMEType.Quicktime:
+                    return true;
+                default:
+                    AddError(ErrorStatus.AccessDenied); return false;
+            }
+        }
     }
 }
