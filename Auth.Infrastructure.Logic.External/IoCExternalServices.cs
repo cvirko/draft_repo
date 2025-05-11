@@ -14,12 +14,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using TokenOptions = Auth.Domain.Core.Common.Tools.Configurations.TokenOptions;
+using FileService = Auth.Infrastructure.Logic.External.Files.FileService;
+using Stripe;
+using Auth.Infrastructure.Logic.External.Payments;
+using Auth.Domain.Interface.Logic.External.Payments;
 
 namespace Auth.Infrastructure.Logic.External
 {
     public static class IoCExternalServices
     {
-        public static void RegistrationExternalService(this IServiceCollection services)
+        public static void RegistrationExternalService(this IServiceCollection services, PaymentOptions options)
         {
             services.AddHttpClient<IFileService, FileService>();
             services.AddHttpClient<IAuthFacebook, AuthFacebook>(option =>
@@ -32,8 +36,16 @@ namespace Auth.Infrastructure.Logic.External
             
             services.AddScoped<IAuthGoogle, AuthGoogle>();
             services.AddScoped<IAuthFacebook, AuthFacebook>();
-            
-            
+
+            services.AddSingleton<IStripeClient>(provider => new StripeClient(
+                apiKey: options.Stripe_SecretKey,
+                httpClient: new SystemNetHttpClient(
+                    httpClient: new HttpClient { Timeout = TimeSpan.FromSeconds(10) },
+                    maxNetworkRetries: options.Stripe_MaxNetworkRetries
+                )
+            ));
+            services.AddScoped<IPaymentUnitOfWork, PaymentUnitOfWork>();
+            services.AddScoped<IStripePayment, StripePayment>();
         }
         public static void AddAuthentication(this IServiceCollection services, TokenOptions tokenO, AuthOptions auth)
         {

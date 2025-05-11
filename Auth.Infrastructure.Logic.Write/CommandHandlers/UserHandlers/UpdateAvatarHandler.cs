@@ -7,15 +7,15 @@ using Microsoft.Extensions.Options;
 namespace Auth.Infrastructure.Logic.Write.CommandHandlers.UserHandlers
 {
     internal class UpdateAvatarHandler(IImageService image, IOptionsSnapshot<FilesOptions> option,
-        IFileBuilder file) : ICommandHandler<UpdateAvatarCommand>
+        IFileBuilder file) : Handler<UpdateAvatarCommand>
     {
         private readonly IImageService _image = image;
         private readonly FilesOptions _options = option.Value;
         private readonly IFileBuilder _file = file;
-        public Task HandleAsync(UpdateAvatarCommand command)
+        public override Task HandleAsync(UpdateAvatarCommand command)
         {
             var avatar = _image.ReSizePng(command.Avatar);
-            _file.ReWriteFile(_options.AvatarsStorePath, command.UserId.ToAvatarName(), avatar);
+            _file.ReWriteFile(_options.AvatarsStorePath, command.UserId.ToFileName(), avatar);
             return Task.CompletedTask;
         }
     }

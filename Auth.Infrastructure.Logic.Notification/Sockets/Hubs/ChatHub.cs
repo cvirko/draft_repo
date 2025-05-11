@@ -21,7 +21,7 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.Hubs
         public override async Task OnConnectedAsync()
         {
             var userId = Context.User.GetUserId();
-            var connection = await _cache.GetDataAsync<UserConnection>(_cache.GetConnectionKey(userId));
+            var connection = await _cache.GetDataAsync<UserHubConnection>(_cache.GetConnectionKey(userId));
             LogInfo(nameof(OnConnectedAsync), userId);
             await UpdateGroupAsync(connection, Context.ConnectionId, userId);
             await base.OnConnectedAsync();
@@ -36,13 +36,13 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.Hubs
             if (userId != Guid.Empty)
             {
                 LogInfo(nameof(OnDisconnectedAsync), userId);
-                var connection = await _cache.GetDataAsync<UserConnection>(_cache.GetConnectionKey(userId));
+                var connection = await _cache.GetDataAsync<UserHubConnection>(_cache.GetConnectionKey(userId));
                 connection.DisconnectedDate = DateTimeExtension.Get();
                 await _cache.SetDataAsync(_cache.GetConnectionKey(userId), connection);
             }
             await base.OnDisconnectedAsync(exception);
         }
-        private async Task UpdateGroupAsync(UserConnection connection, string connectionId, Guid userId)
+        private async Task UpdateGroupAsync(UserHubConnection connection, string connectionId, Guid userId)
         {
             if (string.IsNullOrEmpty(connectionId)) return;
             if (connection?.ConnectionId == connectionId) return;

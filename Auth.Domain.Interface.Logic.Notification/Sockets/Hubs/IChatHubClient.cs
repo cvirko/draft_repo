@@ -6,6 +6,6 @@ namespace Auth.Domain.Interface.Logic.Notification.Sockets.Hubs
     [SignalRHub]
     public interface IChatHubClient
     {
-        Task ReceiveChatMessageAsync(UserMessageRequest response);
+        Task ReceiveChatMessageAsync(UserHubMessageRequest response);
     }
 }

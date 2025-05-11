@@ -21,35 +21,60 @@ namespace Auth.Api.Configuration
             service.Add<FailedAccessOptions>(configuration, AppConsts.USER_FAILED_ACCESS_SECTION_NAME);
             service.Add<AuthOptions>(configuration, AppConsts.AUTH_SETTING_SECTION_NAME);
             service.Add<RabbitMQOptions>(configuration, AppConsts.RABBITMQ_SECTION_NAME);
-
+            service.Add<PaymentOptions>(configuration, AppConsts.PAYMENT_SECTION_NAME);
         }
         public static void AddIoC(this IHostApplicationBuilder builder)
         {
             builder.Services.RegistrationValidationService();
             builder.Services.RegistrationReadModelService();
             builder.Services.RegistrationWriteService();
-            builder.Services.RegistrationExternalService();
+            builder.Services.RegistrationExternalService(
+                builder.Configuration.Get<PaymentOptions>(AppConsts.PAYMENT_SECTION_NAME));
             builder.Services.RegistrationNotificationService();
             builder.Services.AddAuthentication(
                 builder.Configuration.Get<TokenOptions>(AppConsts.TOKEN_SETTING_SECTION_NAME),
                 builder.Configuration.Get<AuthOptions>(AppConsts.AUTH_SETTING_SECTION_NAME));
-            builder.Services.RegistrationDBService(builder.Environment, builder.Configuration.Get<ConnectionOptions>(AppConsts.CONNECTION_SECTION_NAME));
-
+            builder.Services.RegistrationDataServices(builder.Environment, builder.Configuration.Get<ConnectionOptions>(AppConsts.CONNECTION_SECTION_NAME));
+            builder.Services.AddWorkers();
         }
         public static void UseIoC(this WebApplication app, IHostApplicationBuilder builder)
         {
+            var option = builder.Configuration.Get<FilesOptions>(AppConsts.FILE_SECTION_NAME);
+            string webRootPath = Path.Combine(builder.Environment.ContentRootPath,"wwwroot");
+
+            app.UseValidationMessages(option);
+
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, 
-                builder.Configuration.Get<FilesOptions>(AppConsts.FILE_SECTION_NAME).AvatarsStorePath)),
-                RequestPath = $"/{AppConsts.AVATARS_PATH}"
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(webRootPath, option.AvatarsStorePath)),
+                RequestPath = AppConsts.AVATARS_PATH
             });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(webRootPath, option.VideoStorePath)),
+                RequestPath = AppConsts.VIDEO_PATH,
+                OnPrepareResponse = ctx =>
+                {
+                    if (!ctx.Context.User.Identity.IsAuthenticated)
+                    {
+                        ctx.Context.Response.StatusCode = 401;
+                        ctx.Context.Response.ContentLength = 0;
+                        ctx.Context.Response.Body = Stream.Null;
+                    }
+                }
+            }
+            );
 
             app.UseNotification();
 
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseDataServices();
         }
         private static void Add<T>(this IServiceCollection service, IConfiguration configuration, string sectionName) where T : Options
         {

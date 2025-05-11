@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Auth.Domain.Interface.Logic.Read\Auth.Domain.Interface.Logic.Read.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\" />
+  </ItemGroup>
+
 </Project>

@@ -1,11 +1,13 @@
-﻿namespace Auth.Infrastructure.Logic.Validation.ValidationRules
+﻿using Auth.Domain.Core.Data.DBEntity.Account;
+
+namespace Auth.Infrastructure.Logic.Validation.ValidationRules
 {
-    internal class EmailValidationRule(RegexService regex, Action<ErrorStatus, object[]> action) 
-        : ValidationRule(regex, action), IEmailValidationRule
+    internal class EmailValidationRule(IRegexService regex, Action<ErrorStatus, object[]> action) 
+        : ValidationRule<string>(regex, action), IEmailValidationRule
     {
         public override bool IsLengthFormatValid(string value)
         {
-            if (IsLengthInvalid(value, nameof(UnitOfWorkValidationRule.Email)))
+            if (IsLengthInvalid(value, new Range(7, 64)))
                 return false;
 
             if (_regex.IsEmailInvalidFormat(value))

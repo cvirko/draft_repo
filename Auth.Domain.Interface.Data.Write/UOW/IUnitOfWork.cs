@@ -10,6 +10,7 @@ namespace Auth.Domain.Interface.Data.Write.UOW
         void Remove<T>(params T[] models) where T : TEntity;
         int Save();
         Task<int> SaveAsync();
+        Task<int> UpdateBalanceAsync(Guid userId, decimal amount, CancellationToken token = default);
         Task RemoveTokensBeforeAsync(DateTime date, CancellationToken token);
     }
 }

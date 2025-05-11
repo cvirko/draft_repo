@@ -1,6 +1,8 @@
-﻿namespace Auth.Domain.Interface.Logic.Read.Validators.Rules
+﻿using Auth.Domain.Core.Data.DBEntity.Account;
+
+namespace Auth.Domain.Interface.Logic.Read.Validators.Rules
 {
-    public interface IEmailValidationRule : IValidationRule
+    public interface IEmailValidationRule : IValidationRule<string>
     {
         Task<bool> IsNotOccupiedAsync(string value, Func<string, Task<bool>> queryAsync);
         Task<bool> IsExistAsync(string value, Func<string, Task<bool>> queryAsync);

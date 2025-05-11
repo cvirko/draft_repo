@@ -1,4 +1,5 @@
-﻿using Auth.Domain.Core.Logic.Commands.Account;
+﻿using Auth.Domain.Core.Data.DBEntity.Account;
+using Auth.Domain.Core.Logic.Commands.Account;
 using Auth.Domain.Core.Logic.Models.DTOs.User;
 using Auth.Domain.Core.Logic.Models.Tokens;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +17,7 @@ namespace Auth.Infrastructure.Logic.Read.Mappers
                 Role = from.Role,
                 UserId = from.UserId,
                 UserName = from.UserName,
-                AvatarURL = Path.Combine(avatarsURL,  from.UserId.ToAvatarName())
+                AvatarURL = Path.Combine(avatarsURL,  from.UserId.ToFileName())
             };
         }
         public LoginDTO Map(UserLogin from, HttpRequest request)

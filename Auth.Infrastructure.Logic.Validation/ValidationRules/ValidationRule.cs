@@ -1,17 +1,16 @@
 ﻿namespace Auth.Infrastructure.Logic.Validation.ValidationRules
 {
-    internal abstract class ValidationRule(RegexService regex, Action<ErrorStatus, object[]> action) 
+    internal abstract class ValidationRule<T>(IRegexService regex, Action<ErrorStatus, object[]> action) 
         : ValidationRuleBase(action)
     {
-        protected readonly RegexService _regex = regex;
-        public abstract bool IsLengthFormatValid(string value);
-        protected bool IsLengthInvalid(string value, string name)
+        protected readonly IRegexService _regex = regex;
+        public abstract bool IsLengthFormatValid(T value);
+        protected bool IsLengthInvalid(string value, Range length)
         {
-            var lengthValue = _regex.Length[name];
            
-            if (_regex.IsFieldInvalidLength(value, lengthValue))
+            if (_regex.IsFieldInvalidLength(value, length))
             {
-                AddError(ErrorStatus.Length, lengthValue.Start, lengthValue.End);
+                AddError(ErrorStatus.Length, length.Start, length.End);
                 return true;
             }
             return false;

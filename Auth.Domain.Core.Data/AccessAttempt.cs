@@ -2,9 +2,9 @@
 
 namespace Auth.Domain.Core.Data
 {
-    public abstract class AccessAttempt: TEntity
+    public abstract class AccessAttempt(ushort attempts = 5) : TEntity
     {
-        public short Attempts { get; set; } = 5;
-        public DateTime CreationDate { get; set; } = DateTimeExtension.Get();
+        public ushort Attempts { get; set; } = attempts;
+        public DateTime DateAt { get; set; } = DateTimeExtension.Get();
     }
 }

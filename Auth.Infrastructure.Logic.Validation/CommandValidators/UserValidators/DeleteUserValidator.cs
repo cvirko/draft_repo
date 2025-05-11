@@ -3,18 +3,18 @@ using Auth.Domain.Interface.Logic.External.Auth;
 
 namespace Auth.Infrastructure.Logic.Validation.CommandValidators.UserValidators
 {
-    internal class DeleteUserValidator(IUnitOfWorkValidationRule rule, IUnitOfWorkRead uow,
+    internal class DeleteUserValidator(IValidationRuleService validate, IUnitOfWorkRead uow,
         IPasswordHasherService password) 
-        : Validator<DeleteUserCommand>(rule)
+        : Validator<DeleteUserCommand>(validate)
     {
         private readonly IUnitOfWorkRead _uow = uow;
         private readonly IPasswordHasherService _passwordHasher = password;
         public override async Task<IEnumerable<ValidationError>> ValidateAsync(DeleteUserCommand command)
         {
-            RuleFor().User().IsLengthFormatValid(command.UserId.ToString());
+            RuleFor().User().IsLengthFormatValid(command.UserId);
             RuleFor(p => p.Password).Password().IsLengthFormatValid(command.Password);
 
-            if (IsInvalid()) return GetErrors();
+            if (IsInvalid) return GetErrors();
 
             var login = await _uow.Users().GetLoginByUserIdAsync(command.UserId, command.LoginId);
             if (!RuleFor().User().IsExist(login))

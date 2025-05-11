@@ -7,13 +7,13 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
 {
     internal class SendResetPassMessageHandler(IMailService mail, ITokenBuilder token, 
         ICommandDispatcher dispatcher, IUnitOfWorkRead uow)
-        : ICommandHandler<SendResetPassMessageCommand>
+        : Handler<SendResetPassMessageCommand>
     {
         private readonly IMailService _mail = mail;
         private readonly ITokenBuilder _token = token;
         private readonly ICommandDispatcher _dispatcher = dispatcher;
         private readonly IUnitOfWorkRead _uow = uow;
-        public async Task HandleAsync(SendResetPassMessageCommand command)
+        public override async Task HandleAsync(SendResetPassMessageCommand command)
         {
             var tokenData = _token.CreateNumericToken();
             var login = await _uow.Users().GetLoginByEmailAsync(command.Email);

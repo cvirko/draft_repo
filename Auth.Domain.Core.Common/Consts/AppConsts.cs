@@ -4,8 +4,8 @@ namespace Auth.Domain.Core.Common.Consts
 {
     public class AppConsts
     {
-        public const string AVATARS_PATH = "Avatars";
-        public const int ERRORS_MAX_LENGTH = 5; 
+        public const string AVATARS_PATH = "/Avatars";
+        public const string VIDEO_PATH = "/Video";
         public const string ALLOWED_SPECIFIC_ORIGIN = "AllowedOrigins";
         public const string SEPARATOR = "_";
         public const string GLOBALERROR = "general";
@@ -21,8 +21,10 @@ namespace Auth.Domain.Core.Common.Consts
         public const string TIME_ZONE_SECTION_NAME = "TimeZoneOffsetInHours";
         public const string SENDGRID_SECTION_NAME = "SendGrid";
         public const string RABBITMQ_SECTION_NAME = "RabbitMQ";
+        public const string PAYMENT_SECTION_NAME = "Payment";
 
         public static readonly string APP_NAME = Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName).Split(".")[0];
+        public static readonly string PHYSICAL_ROOT_PATH = new string(Directory.GetCurrentDirectory().SkipLast(4).ToArray());
         public static readonly string SWAGGER_DESCRIPTION = $"This is the Swagger documentation for the {APP_NAME} Management API.";
         public static readonly string SWAGGER_TITLE = $"{APP_NAME} API";
     }

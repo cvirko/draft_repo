@@ -1,11 +1,14 @@
-﻿namespace Auth.Infrastructure.Logic.Validation.ValidationRules
+﻿using Auth.Domain.Core.Data.DBEntity.Account;
+using Auth.Domain.Core.Data.Extensions;
+
+namespace Auth.Infrastructure.Logic.Validation.ValidationRules
 {
-    internal class PasswordValidationRule(RegexService regex, Action<ErrorStatus, object[]> action) 
-        : ValidationRule(regex, action), IPasswordValidationRule
+    internal class PasswordValidationRule(IRegexService regex, Action<ErrorStatus, object[]> action) 
+        : ValidationRule<string>(regex, action), IPasswordValidationRule
     {
         public override bool IsLengthFormatValid(string value)
         {
-            if (IsLengthInvalid(value, nameof(UnitOfWorkValidationRule.Password)))
+            if (IsLengthInvalid(value, new Range(8, 64)))
                 return false;
 
             if (_regex.IsPasswordInvalidFormat(value))
@@ -30,24 +33,19 @@
         }
         public bool IsHaveAttempts(UserLogin login)
         {
-            if (login.Attempts > 0)
+            if (login.IsHaveAttempts())
                 return true;
             AddError(ErrorStatus.NoAttempts);
             return false;
         }
         public bool IsNotBanned(UserLogin login)
         {
-            if (login?.BanExpireDate != null)
-            {
-                var time = (login.BanExpireDate.Value - DateTimeExtension.Get()).TotalSeconds;
-                if (time < 10)
-                {
-                    AddError(ErrorStatus.AccessDenied, login.BanExpireDate);
-                    return false;
-                }
-                
-            }
-            
+            if (!login.IsTimeLocked())
+                return true;
+            var expireInSeconds = (login.BanExpireDate.Value - DateTimeExtension.Get()).TotalSeconds;
+            if (expireInSeconds < 10)
+                return true;
+            AddError(ErrorStatus.AccessDenied, login.BanExpireDate);
             return false;
         }
     }

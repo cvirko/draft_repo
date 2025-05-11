@@ -5,9 +5,9 @@ using Microsoft.Extensions.Options;
 
 namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidators
 {
-    internal class SendConfirmEmailMessageValidator(IUnitOfWorkValidationRule rule, IUnitOfWorkRead uow,
+    internal class SendConfirmEmailMessageValidator(IValidationRuleService validate, IUnitOfWorkRead uow,
         IOptionsSnapshot<MailOptions> options, ICacheRepository cache) 
-        : Validator<SendConfirmEmailMessageCommand>(rule)
+        : Validator<SendConfirmEmailMessageCommand>(validate)
     {
         private readonly IUnitOfWorkRead _uow = uow;
         private readonly ICacheRepository _cache = cache;
@@ -16,12 +16,12 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidato
         {
             RuleFor(p => p.Email).Email().IsLengthFormatValid(command.Email);
             RuleFor(p => p.UserName).Name().IsLengthFormatValid(command.UserName);
-            RuleFor().User().IsLengthFormatValid(command.UserId.ToString());
-            if (IsInvalid()) return GetErrors();
+            RuleFor().User().IsLengthFormatValid(command.UserId);
+            if (IsInvalid) return GetErrors();
 
-            var token = await _uow.Users().GetUserTokenAsync(command.UserId, TokenType.ConfirmMail);
+            var token = await _uow.Users().GetUserTokenAsync(command.UserInfo, command.UserId, TokenType.ConfirmMail);
             if (!RuleFor(p => p.Email).Email()
-                .IsDelayGone(command.Email, token?.CreationDate, _mailOptions.DelayBetweenMessagesInMinutes))
+                .IsDelayGone(command.Email, token?.DateAt, _mailOptions.DelayBetweenMessagesInMinutes))
                 return GetErrors();
 
             if (!await RuleFor(p => p.Email).Email().IsNotOccupiedAsync(command.Email, _uow.Users().IsExistEmailAsync))

@@ -15,7 +15,6 @@ COPY ["Auth.Api.Infrastructure.Logic.Read/*.csproj", "Auth.Api.Infrastructure.Lo
 COPY ["Auth.Api.Infrastructure.Logic.External/*.csproj", "Auth.Api.Infrastructure.Logic.External/"]
 COPY ["Auth.Api.Infrastructure.Logic.Notification/*.csproj", "Auth.Api.Infrastructure.Logic.Notification/"]
 COPY ["Auth.Api.Infrastructure.Data/*.csproj", "Auth.Api.Infrastructure.Data/"]
-COPY ["Auth.Api.Domain.Interface.Logic.Write/*.csproj", "Auth.Api.Domain.Interface.Logic.Write/"]
 COPY ["Auth.Api.Domain.Interface.Logic.Read/*.csproj", "Auth.Api.Domain.Interface.Logic.Read/"]
 COPY ["Auth.Api.Domain.Interface.Logic.External/*.csproj", "Auth.Api.Domain.Interface.Logic.External/"]
 COPY ["Auth.Api.Domain.Interface.Logic.Notification/*.csproj", "Auth.Api.Domain.Interface.Logic.Notification/"]
@@ -24,6 +23,7 @@ COPY ["Auth.Api.Domain.Interface.Data.Read/*.csproj", "Auth.Api.Domain.Interface
 COPY ["Auth.Api.Domain.Core.Logic/*.csproj", "Auth.Api.Domain.Core.Logic/"]
 COPY ["Auth.Api.Domain.Core.Data/*.csproj", "Auth.Api.Domain.Core.Data/"]
 COPY ["Auth.Api.Domain.Core.Common/*.csproj", "Auth.Api.Domain.Core.Common/"]
+COPY ["Library.CommandMediator/*.csproj", "Library.CommandMediator/"]
 
 RUN dotnet restore "./Auth.Api/Auth.Api.csproj"
 COPY . .

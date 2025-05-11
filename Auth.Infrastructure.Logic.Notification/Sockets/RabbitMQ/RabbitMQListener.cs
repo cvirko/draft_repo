@@ -10,24 +10,24 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.RabbitMQ
     {
         private readonly IRabbitMQConnection _connection = connection;
 
-        public async Task ReceiveAsync<T>(string queue, Func<T,Task> operationAsync)
+        public async Task ReceiveAsync<T>(string queue, Func<T,Task> operationAsync, CancellationToken stoppingToken)
         {
-            var chanel = await _connection.AddChannelAsync();
+            var chanel = await _connection.AddChannelAsync(stoppingToken);
             await chanel.QueueDeclareAsync(queue: queue, 
-                durable: true, exclusive: false, autoDelete: false, arguments: null);
-            //не отправлять более одного сообщения работнику за раз
-            await chanel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false);
+                durable: true, exclusive: false, autoDelete: false, arguments: null,cancellationToken: stoppingToken);
+            //not send more than one message to an employee at a time
+            await chanel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false, stoppingToken);
             var consumer = new AsyncEventingBasicConsumer(chanel);
             consumer.ReceivedAsync += async (model, ea) =>
             {
                 var jsonMessage = ea.Body.ToUTF8String();
                 var message = JsonConvert.DeserializeObject<T>(jsonMessage);
                 await operationAsync(message);
-                //подтверждение принятия сообщения
-                await chanel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
+                //acknowledgement of receipt of message
+                await chanel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false, stoppingToken);
             };
 
-            await chanel.BasicConsumeAsync(queue, autoAck: false, consumer: consumer);
+            await chanel.BasicConsumeAsync(queue, autoAck: false, consumer: consumer, stoppingToken);
         }
     }
 }

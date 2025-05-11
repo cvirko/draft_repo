@@ -1,6 +1,6 @@
 ﻿global using Auth.Domain.Core.Common.Extensions;
 global using Auth.Domain.Core.Logic.Commands;
-global using Auth.Domain.Interface.Logic.Write.Commands;
+global using Library.CommandMediator.Interfaces;
 global using Microsoft.AspNetCore.Mvc;
 global using Asp.Versioning;
 global using Auth.Domain.Core.Common.Consts;

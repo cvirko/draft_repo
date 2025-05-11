@@ -1,14 +1,14 @@
-﻿namespace Auth.Infrastructure.Logic.Validation.ValidationRules
-{
-    internal class UserValidationRule(RegexService regex, Action<ErrorStatus, object[]> action) 
-        : ValidationRule(regex, action), IUserValidationRule
-    {
-        public override bool IsLengthFormatValid(string value)
-        {
-            if (IsLengthInvalid(value, nameof(UnitOfWorkValidationRule.User)))
-                return false;
+﻿using Auth.Domain.Core.Data.DBEntity.Account;
+using Auth.Domain.Core.Data.Extensions;
 
-            if (value == Guid.Empty.ToString())
+namespace Auth.Infrastructure.Logic.Validation.ValidationRules
+{
+    internal class UserValidationRule(IRegexService regex, Action<ErrorStatus, object[]> action) 
+        : ValidationRule<Guid>(regex, action), IUserValidationRule
+    {
+        public override bool IsLengthFormatValid(Guid value)
+        {
+            if (value == Guid.Empty)
             {
                 AddError(ErrorStatus.AccessDenied);
                 return false;

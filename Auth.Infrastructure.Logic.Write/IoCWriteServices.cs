@@ -1,4 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Auth.Domain.Core.Common.Tools.Configurations;
+using Auth.Domain.Interface.Logic.Read.ModelBuilder.ServiceBuilder;
+using Auth.Infrastructure.Logic.Write.Workers;
+using Library.CommandMediator;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System.Reflection;
 
 namespace Auth.Infrastructure.Logic.Write
@@ -8,17 +13,26 @@ namespace Auth.Infrastructure.Logic.Write
         public static void RegistrationWriteService(this IServiceCollection services)
         {
             var classesIoc = Assembly.GetExecutingAssembly().GetIocTypes();
-            services.AddScoped<ICommandHandler<Command>>(classesIoc);
-            services.AddScoped<ICommandDispatcher, CommandDispatcher>();
-            services.AddScoped<ICommandHandlerFactory, CommandHandlerFactory>();
+            services.AddHandlers(classesIoc);
+            services.AddCommandMediator<ValidationError, ErrorStatus>();
         }
-        private static void AddScoped<T>(this IServiceCollection services, Type[] types)
+        public static void AddWorkers(this IServiceCollection services)
         {
-            var classes = types.GetClasses<T>();
-            for (var i = 0; i < classes.Length; i++)
+            services.AddHostedService<InitialWorker>();
+            services.AddHostedService<PaymentWorker>();
+        }
+        public static void UseValidationMessages(this IHost host, FilesOptions options)
+        {
+            using (var scope = host.Services.CreateScope())
             {
-                services.AddScoped(classes[i].GetInterfaces()[0], classes[i]);
+                var builder = scope.ServiceProvider.GetRequiredService<IFileBuilder>();
+                var date = builder.GetFromJson
+                    <IEnumerable<ErrorMessage>>
+                    (options.ErrorsTextPath)
+                    .ToDictionary(p => p.StatusName, p => p.Text);
+                host.UseCommandMediator(date);
             }
         }
+        private record ErrorMessage(ErrorStatus StatusName, string Text);
     }
 }

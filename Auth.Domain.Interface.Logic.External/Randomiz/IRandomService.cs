@@ -2,6 +2,7 @@
 {
     public interface IRandomService
     {
+        public void Shuffle<T>(T[] values);
         public int Get(int min, int max);
         public int Get(int max);
         public int GetIndex(params int[] chances);

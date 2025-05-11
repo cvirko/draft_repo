@@ -1,4 +1,5 @@
-﻿using Auth.Domain.Interface.Data.Read.Repository;
+﻿using Auth.Domain.Core.Data.DBEntity.Account;
+using Auth.Domain.Interface.Data.Read.Repository;
 
 namespace Auth.Infrastructure.Data.Repository
 {
@@ -33,28 +34,28 @@ namespace Auth.Infrastructure.Data.Repository
         }
         public async Task<UserToken> GetUserTokenAsync(string userInfo, Guid userId, TokenType type)
         {
-            return await _context.UsersTokens
-                .FirstOrDefaultAsync(p => 
-                       p.UserId == userId 
-                    && p.UserInfo == userInfo
-                    && p.TokenType == type);
-        }
-        public async Task<UserToken> GetUserTokenAsync(Guid userId, TokenType type)
-        {
-            return await _context.UsersTokens
-                .FirstOrDefaultAsync(p =>
-                       p.UserId == userId
-                    && p.TokenType == type);
+            return await _context.UsersTokens.FindAsync(userId, type, userInfo);
         }
         public async Task<User> GetUserAsync(Guid userId)
         {
-            return await _context.Users
-                .FirstOrDefaultAsync(p => p.UserId == userId);
+            return await _context.Users.FindAsync(userId);
         }
         public async Task<bool> IsExistUserAsync(Guid userId)
         {
             return await _context.Users
                 .AnyAsync(p => p.UserId == userId);
+        }
+        public async Task<UserWallet> GetWalletAsync(Guid userId)
+        {
+            return await _context.Wallets
+                .FirstOrDefaultAsync(p => p.UserId == userId);
+        }
+        public async Task<decimal?> GetExpectedBalanceAsync(Guid userId, decimal amount)
+        {
+            return await _context.Wallets
+                .Where(p => p.UserId == userId)
+                .Select(p => p.Balance + amount)
+                .FirstOrDefaultAsync();
         }
     }
 }

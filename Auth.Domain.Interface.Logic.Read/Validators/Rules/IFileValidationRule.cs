@@ -4,5 +4,6 @@
     {
         bool IsNotEmpty(Stream file);
         bool IsImage(Stream file, string contentType);
+        bool IsVideo(Stream file, string contentType);
     }
 }

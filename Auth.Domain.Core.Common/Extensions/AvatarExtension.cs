@@ -2,6 +2,6 @@
 {
     public static class AvatarExtension
     {
-        public static string ToAvatarName(this Guid userId, string type = "png") => string.Format("{0}.{1}", userId, type);
+        public static string ToFileName(this Guid userId, string type = "png") => string.Format("{0}.{1}", userId, type);
     }
 }

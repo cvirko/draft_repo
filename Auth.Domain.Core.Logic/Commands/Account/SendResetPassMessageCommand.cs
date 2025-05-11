@@ -1,8 +1,14 @@
 ﻿namespace Auth.Domain.Core.Logic.Commands.Account
 {
-    public class SendResetPassMessageCommand(string email) : Command
+    public class SendResetPassMessageCommand : Command
     {
-        public string Email { get; set; } = email;
+        public SendResetPassMessageCommand(){ }
+        public SendResetPassMessageCommand(string email)
+        {
+            Email = email;
+        }
+
+        public string Email { get; set; }
         [JsonIgnore]
         public string UserInfo { get; set; }
     }

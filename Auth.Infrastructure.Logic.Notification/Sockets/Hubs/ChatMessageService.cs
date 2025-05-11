@@ -16,13 +16,13 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.Hubs
         private readonly ILogger<ChatMessageService> _logger = logger;
         private readonly IHubContext<ChatHub, IChatHubClient> _hub = hub;
         private readonly ICacheRepository _cache = cache;
-        public async Task SendChatMessageAsync(UserMessage message)
+        public async Task SendChatMessageAsync(UserHubMessage message)
         {
             if (string.IsNullOrEmpty(message.Id)) return;
             if (string.IsNullOrEmpty(message.UserName)) return;
             if (string.IsNullOrEmpty(message.GroupName)) return;
             if (string.IsNullOrEmpty(message.Text)) return;
-            var connection = await _cache.GetDataAsync<UserConnection>(_cache.GetConnectionKey(message.UserId));
+            var connection = await _cache.GetDataAsync<UserHubConnection>(_cache.GetConnectionKey(message.UserId));
             if (connection?.IsDisconected ?? true
                 || !connection.Groups.Contains(message.GroupName))
             {
@@ -36,7 +36,7 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.Hubs
         {
             if (string.IsNullOrEmpty(groupName)) return;
             if (userId == Guid.Empty) return;
-            var connection = await _cache.GetDataAsync<UserConnection>(_cache.GetConnectionKey(userId));
+            var connection = await _cache.GetDataAsync<UserHubConnection>(_cache.GetConnectionKey(userId));
             if (connection?.IsDisconected ?? true ) 
             {
                 throw new ForbiddenException($"No {AppConsts.HUBNAME} connection");
@@ -54,7 +54,7 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.Hubs
         {
             if (string.IsNullOrEmpty(groupName)) return;
             if (userId == Guid.Empty) return;
-            var connection = await _cache.GetDataAsync<UserConnection>(_cache.GetConnectionKey(userId));
+            var connection = await _cache.GetDataAsync<UserHubConnection>(_cache.GetConnectionKey(userId));
             if (connection?.IsDisconected ?? true)
             {
                 throw new ForbiddenException($"No {AppConsts.HUBNAME} connection");

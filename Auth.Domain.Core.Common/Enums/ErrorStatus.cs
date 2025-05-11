@@ -12,7 +12,7 @@
         AlreadyOccupied,
         AlreadyConfirmed,
         NoAttempts,
-        ConfirmMail
-
+        ConfirmMail,
+        InsufficientFunds
     }
 }

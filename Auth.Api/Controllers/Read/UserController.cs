@@ -10,7 +10,8 @@ namespace Auth.Api.Controllers.Read
     [ApiVersion(1.0, Deprecated = false)]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class UserController(IUserBuilder userB, IFileBuilder fileB, IOptionsSnapshot<FilesOptions> option) : ControllerBase
+    public class UserController(IUserBuilder userB, IFileBuilder fileB, 
+        IOptionsSnapshot<FilesOptions> option) : ControllerBase
     {
         private readonly IUserBuilder _user = userB;
         private readonly IFileBuilder _file = fileB;
@@ -37,9 +38,23 @@ namespace Auth.Api.Controllers.Read
         [HttpGet]
         public async Task<ActionResult> GetAvatar([FromRoute] Guid userId)
         {
-            var avatar = await _file.ReadFileAsync(_options.AvatarsStorePath, userId.ToAvatarName());
+            var avatar = await _file.ReadFileAsync(_options.AvatarsStorePath, userId.ToFileName());
             if (avatar == null) return NoContent();
             return File(avatar, MIMEType.Png);
+        }
+        [Authorize(AuthConsts.IS_USER)]
+        [Route("Video")]
+        [HttpGet]
+        public ActionResult GetVideo()
+        {
+            var info = _file.GetInfo(_options.VideoStorePath, User.GetUserId().ToString());
+            if (info is null)
+                return NoContent();
+            return File(
+                info.FilePath,
+                info.ContentType,
+                info.FileDownloadName,
+                info.EnableRangeProcessing);
         }
     }
 }

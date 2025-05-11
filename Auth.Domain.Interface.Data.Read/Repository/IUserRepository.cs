@@ -1,5 +1,5 @@
 ﻿using Auth.Domain.Core.Common.Enums;
-using Auth.Domain.Core.Data.DBEntity;
+using Auth.Domain.Core.Data.DBEntity.Account;
 
 namespace Auth.Domain.Interface.Data.Read.Repository
 {
@@ -9,9 +9,10 @@ namespace Auth.Domain.Interface.Data.Read.Repository
         Task<UserLogin> GetLoginByUserIdAsync(Guid userId, ulong loginId);
         Task<UserLogin> GetLoginByEmailAsync(string email);
         Task<UserToken> GetUserTokenAsync(string userInfo, Guid userId, TokenType type);
-        Task<UserToken> GetUserTokenAsync(Guid userId, TokenType type);
         Task<User> GetUserAsync(Guid userId);
         Task<bool> IsExistUserAsync(Guid userId);
         Task<UserToken[]> GetUserTokensAsync(Guid userId);
+        Task<UserWallet> GetWalletAsync(Guid userId);
+        Task<decimal?> GetExpectedBalanceAsync(Guid userId, decimal amount);
     }
 }
