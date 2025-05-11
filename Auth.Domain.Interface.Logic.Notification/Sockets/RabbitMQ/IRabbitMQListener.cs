@@ -2,6 +2,6 @@
 {
     public interface IRabbitMQListener
     {
-        Task ReceiveAsync<T>(string queue, Func<T, Task> operationAsync);
+        Task ReceiveAsync<T>(string queue, Func<T, Task> operationAsync, CancellationToken stoppingToken = default);
     }
 }

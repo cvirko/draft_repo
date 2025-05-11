@@ -1,4 +1,3 @@
-using Auth.Api.BackgroundProcesses;
 using Auth.Api.Configuration;
 using Auth.Api.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -13,7 +12,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenConfig();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApiVersioningCustom();
-builder.Services.AddHostedService<InitialWorker>();
 
 var app = builder.Build();
 
@@ -39,3 +37,6 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+//wpf
+//ai
+//microser

@@ -23,5 +23,45 @@ namespace Auth.Domain.Core.Common.Extensions
 
             return char.ToLower(value[0]) + value.Substring(1);
         }
+        public static bool ContainsAny(this string text, string[] substrings, int startIndex, int endIndex)
+        {
+            int count = endIndex - startIndex - 1;
+            for (int i = 0; i < substrings.Length; i++)
+                if (text.IsContains(substrings[i], startIndex, count))
+                    return true;
+            return false;
+        }
+        public static bool IsContains(this string text, string substring, int startIndex, int count)
+            => text.IndexOf(substring, startIndex, count) > -1;
+        public static bool TryIndexOf(this string text, string substring, int startIndex, out int index)
+        {
+            index = text.IndexOf(substring, startIndex);
+            return index > -1;
+        }
+        public static bool IsStartAt(this string text, string substring, int startIndex)
+        {
+            if (text.Length - startIndex < substring.Length)
+                return false;
+
+            for (int i = 0; i < substring.Length; i++)
+            {
+                if (text[startIndex + i] != substring[i])
+                    return false;
+            }
+            return true;
+        }
+        public static bool StartAny(this string text, string[] substrings, int startIndex)
+        {
+            for (int i = 0; i < substrings.Length; i++)
+                if (text.IsStartAt(substrings[i], startIndex))
+                    return true;
+            return false;
+        }
+        public static string GetBetween(this string text, string start, string end)
+        {
+            int startIndex = text.IndexOf(start) + start.Length;
+            int endIndex = text.IndexOf(end, startIndex);
+            return text.Substring(startIndex, endIndex - startIndex);
+        }
     }
 }

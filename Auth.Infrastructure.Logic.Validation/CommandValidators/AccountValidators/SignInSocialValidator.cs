@@ -2,8 +2,8 @@
 
 namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidators
 {
-    internal class SignInSocialValidator(IUnitOfWorkValidationRule rule) 
-        : Validator<SignInSocialCommand>(rule)
+    internal class SignInSocialValidator(IValidationRuleService validate) 
+        : Validator<SignInSocialCommand>(validate)
     {
         public override Task<IEnumerable<ValidationError>> ValidateAsync(SignInSocialCommand command)
         {

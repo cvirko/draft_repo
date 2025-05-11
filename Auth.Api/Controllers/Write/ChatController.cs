@@ -1,5 +1,4 @@
-﻿using Auth.Domain.Core.Common.Exceptions;
-using Auth.Domain.Interface.Logic.Notification.Sockets;
+﻿using Auth.Domain.Interface.Logic.Notification.Sockets;
 using Auth.Domain.Interface.Logic.Notification.Sockets.RabbitMQ;
 using Auth.Domain.Interface.Logic.Read.Validators;
 
@@ -9,11 +8,11 @@ namespace Auth.Api.Controllers.Write
     [ApiVersion(1.0, Deprecated = false)]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ChatController(IChatMessageService chat, IUnitOfWorkValidationRule validate,
+    public class ChatController(IChatMessageService chat, IValidationRuleService validate,
         IRabbitMQRequest rabbitMQRequest) : ControllerBase
     {
         private readonly IChatMessageService _chat = chat;
-        private readonly IUnitOfWorkValidationRule _validate = validate;
+        private readonly IValidationRuleService _validate = validate;
         private readonly IRabbitMQRequest _rabbitMQRequest = rabbitMQRequest;
 
         [Authorize(AuthConsts.IS_USER)]
@@ -23,7 +22,7 @@ namespace Auth.Api.Controllers.Write
         {
             if (!_validate.Name().IsLengthFormatValid(name))
             {
-                throw new ForbiddenException(_validate.GetErrors());
+                _validate.Throw(nameof(JoinToChat));
             }
             await _chat.AddUserToGroupAsync(name, User.GetUserId());
             await _rabbitMQRequest.SendAsync(AppConsts.APP_NAME,
@@ -37,7 +36,7 @@ namespace Auth.Api.Controllers.Write
         {
             if (!_validate.Name().IsLengthFormatValid(name))
             {
-                throw new ForbiddenException(_validate.GetErrors());
+                _validate.Throw(nameof(LeaveChat));
             }
             await _chat.RemoveUserFromGroupAsync(name, User.GetUserId());
             await _rabbitMQRequest.SendAsync(AppConsts.APP_NAME,
@@ -47,13 +46,13 @@ namespace Auth.Api.Controllers.Write
         [Authorize(AuthConsts.IS_USER)]
         [Route("Send/Message/{name}")]
         [HttpPost]
-        public async Task<ActionResult> Send([FromRoute] string name, [FromBody] string message)
+        public async Task<ActionResult> ChatSendMessage([FromRoute] string name, [FromBody] string message)
         {
             _validate.Message().IsLengthFormatValid(message);
             _validate.Name().IsLengthFormatValid(name);
-            if (!_validate.IsValid())
+            if (!_validate.IsValid)
             {
-                throw new ForbiddenException(_validate.GetErrors());
+                _validate.Throw(nameof(ChatSendMessage));
             }
             await _chat.SendChatMessageAsync(new()
             {

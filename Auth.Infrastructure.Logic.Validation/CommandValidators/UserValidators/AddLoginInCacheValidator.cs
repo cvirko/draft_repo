@@ -4,9 +4,9 @@ using Auth.Domain.Interface.Logic.External.Auth;
 
 namespace Auth.Infrastructure.Logic.Validation.CommandValidators.UserValidators
 {
-    internal class AddLoginInCacheValidator(IUnitOfWorkValidationRule rule, IUnitOfWorkRead uow,
+    internal class AddLoginInCacheValidator(IValidationRuleService validate, IUnitOfWorkRead uow,
         IPasswordHasherService password, ICacheRepository cache) 
-        : Validator<AddLoginInCacheCommand>(rule)
+        : Validator<AddLoginInCacheCommand>(validate)
     {
         private readonly IUnitOfWorkRead _uow = uow;
         private readonly IPasswordHasherService _passwordHasher = password;
@@ -16,7 +16,7 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.UserValidators
             RuleFor(p => p.Email).Email().IsLengthFormatValid(command.Email);
             RuleFor(p => p.Password).Password().IsLengthFormatValid(command.Password);
 
-            if (IsInvalid()) return GetErrors();
+            if (IsInvalid) return GetErrors();
             if (!await RuleFor(p => p.Email).Email()
                 .IsNotOccupiedAsync(command.Email, _uow.Users().IsExistEmailAsync))
                 return GetErrors();

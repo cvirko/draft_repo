@@ -15,15 +15,15 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.RabbitMQ
         private IConnection Connection;
         private const string ChannelName = "RabbitMQ.Channel";
 
-        public async Task<IChannel> AddChannelAsync()
+        public async Task<IChannel> AddChannelAsync(CancellationToken stoppingToken = default)
         {
-            await TryConnectAsync();
+            await TryConnectAsync(stoppingToken);
             if (Channel != null && Channel.IsOpen) return Channel;
 
             var mylock = await _locks.GetLockAsync(ChannelName);
             try
             {
-                await TryAddChannelAsync();
+                await TryAddChannelAsync(stoppingToken);
             }
             finally
             {
@@ -31,7 +31,6 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.RabbitMQ
             }
             return Channel;
         }
-
         public void Dispose()
         {
             if (Connection is null) return;
@@ -45,7 +44,7 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.RabbitMQ
                 _locks.Remove(ChannelName);
             });
         }
-        private async Task<bool> TryConnectAsync()
+        private async Task<bool> TryConnectAsync(CancellationToken stoppingToken = default)
         {
             if (Connection != null && Connection.IsOpen) return false;
             var factory = new ConnectionFactory
@@ -57,15 +56,15 @@ namespace Auth.Infrastructure.Logic.Notification.Sockets.RabbitMQ
                 AutomaticRecoveryEnabled = true,
             };
             var endpoints = _options.Hosts.Select(p => new AmqpTcpEndpoint(p.Name, p.Port));
-            Connection = await factory.CreateConnectionAsync(endpoints);
+            Connection = await factory.CreateConnectionAsync(endpoints, stoppingToken);
             return true;
         }
-        private async Task<bool> TryAddChannelAsync()
+        private async Task<bool> TryAddChannelAsync(CancellationToken stoppingToken = default)
         {
             if (Connection == null) return false;
             if (Channel != null && Channel.IsOpen) return false;
 
-            Channel = await Connection.CreateChannelAsync();
+            Channel = await Connection.CreateChannelAsync(null, stoppingToken);
             return true;
         }
     }

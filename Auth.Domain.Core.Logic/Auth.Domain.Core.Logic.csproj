@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Auth.Domain.Core.Common\Auth.Domain.Core.Common.csproj" />
+    <ProjectReference Include="..\Library.CommandMediator\Library.CommandMediator.csproj" />
   </ItemGroup>
 
 </Project>

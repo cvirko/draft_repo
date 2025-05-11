@@ -1,4 +1,5 @@
-﻿using Auth.Domain.Core.Logic.Commands.Account;
+﻿using Auth.Domain.Core.Data.DBEntity.Account;
+using Auth.Domain.Core.Logic.Commands.Account;
 using Auth.Domain.Core.Logic.Models.DTOs.User;
 using Auth.Domain.Core.Logic.Models.Tokens;
 using Microsoft.AspNetCore.Http;

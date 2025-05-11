@@ -15,7 +15,7 @@ namespace Auth.Client.ConsoleApp.Services.RabbitMQ
             var chanel = await _connection.AddChannelAsync();
             await chanel.QueueDeclareAsync(queue: queue,
                 durable: true, exclusive: false, autoDelete: false, arguments: null);
-            //не отправлять более одного сообщения работнику за раз
+            //not send more than one message to an employee at a time
             await chanel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false);
             var consumer = new AsyncEventingBasicConsumer(chanel);
             consumer.ReceivedAsync += async (model, ea) =>
@@ -23,7 +23,7 @@ namespace Auth.Client.ConsoleApp.Services.RabbitMQ
                 var jsonMessage = ea.Body.ToUTF8String();
                 var message = JsonSerializer.Deserialize<T>(jsonMessage);
                 await operationAsync(message);
-                //подтверждение принятия сообщения
+                //acknowledgement of receipt of message
                 await chanel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             };
 

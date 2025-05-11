@@ -18,11 +18,11 @@ namespace Auth.Api.Controllers.Write
         private readonly IAccountBuilder _account = builder;
 
         /// <summary>
-        ///  stores user data for 30 minutes for mail confirmation
+        ///  Stores user data, 30 minutes for mail confirmation
         ///  Otherwise it loses the data
         /// </summary>
         /// <param name="command"></param>
-        /// <returns>Return access token</returns>
+        /// <returns>access token</returns>
         /// <remarks>
         /// **Sample request body:**
         ///

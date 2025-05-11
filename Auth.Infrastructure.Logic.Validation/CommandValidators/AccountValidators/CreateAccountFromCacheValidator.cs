@@ -3,16 +3,16 @@ using Auth.Domain.Interface.Data.Read.Cache;
 
 namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidators
 {
-    internal class CreateAccountFromCacheValidator(IUnitOfWorkValidationRule rule, IUnitOfWorkRead uow,
+    internal class CreateAccountFromCacheValidator(IValidationRuleService validate, IUnitOfWorkRead uow,
         ICacheRepository cache) 
-        : Validator<CreateAccountFromCacheCommand>(rule)
+        : Validator<CreateAccountFromCacheCommand>(validate)
     {
         private readonly IUnitOfWorkRead _uow = uow;
         private readonly ICacheRepository _cache = cache;
         public override async Task<IEnumerable<ValidationError>> ValidateAsync(CreateAccountFromCacheCommand command)
         {
             RuleFor(p => p.Email).Email().IsLengthFormatValid(command.Email);
-            if (IsInvalid()) return GetErrors();
+            if (IsInvalid) return GetErrors();
             if (await RuleFor(p => p.Email).Email()
                 .IsNotOccupiedAsync(command.Email, _uow.Users().IsExistEmailAsync))
             {

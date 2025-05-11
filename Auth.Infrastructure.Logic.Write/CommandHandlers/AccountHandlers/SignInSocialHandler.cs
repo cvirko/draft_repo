@@ -1,4 +1,5 @@
 ﻿using Auth.Domain.Core.Common.Tools.Configurations;
+using Auth.Domain.Core.Data.DBEntity.Account;
 using Auth.Domain.Core.Logic.Commands.Account;
 using Auth.Domain.Core.Logic.Commands.User;
 using Auth.Domain.Core.Logic.Models.Tokens;
@@ -10,13 +11,13 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
     internal class SignInSocialHandler(IUnitOfWork uow,
         IOptionsSnapshot<FailedAccessOptions> option, 
         ICommandDispatcher dispatcher, IFileBuilder file)
-        : ICommandHandler<SignInSocialCommand>
+        : Handler<SignInSocialCommand>
     {
         private readonly IFileBuilder _file = file;
         private readonly IUnitOfWork _uow = uow;
         private readonly FailedAccessOptions _option = option.Value;
         private readonly ICommandDispatcher _dispatcher = dispatcher;
-        public async Task HandleAsync(SignInSocialCommand command)
+        public override async Task HandleAsync(SignInSocialCommand command)
         {
             var login = await _uow.Users().GetLoginByEmailAsync(command.Info.Email);
 
@@ -41,7 +42,7 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
                 UserId = userId,
                 User = user,
                 Attempts = _option.FailedAccessAttemptsMaxCount,
-                CreationDate = DateTimeExtension.Get()
+                DateAt = DateTimeExtension.Get()
             };
             await _uow.AddAsync(login);
             await AddAvatarAsync(info.Picture, userId);

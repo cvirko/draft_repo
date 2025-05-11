@@ -3,8 +3,8 @@ using Auth.Domain.Interface.Data.Read.Cache;
 
 namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidators
 {
-    internal class SignInValidator(IUnitOfWorkValidationRule rule, IUnitOfWorkRead uow, ICacheRepository cache) 
-        : Validator<SignInCommand>(rule)
+    internal class SignInValidator(IValidationRuleService validate, IUnitOfWorkRead uow, ICacheRepository cache) 
+        : Validator<SignInCommand>(validate)
     {
         private readonly IUnitOfWorkRead _uow = uow;
         private readonly ICacheRepository _cache = cache;
@@ -13,7 +13,7 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidato
             RuleFor(p => p.Password).Password().IsLengthFormatValid(command.Password);
             RuleFor(p => p.Login).Email().IsLengthFormatValid(command.Login);
 
-            if (IsInvalid()) return GetErrors();
+            if (IsInvalid) return GetErrors();
             var login = await _uow.Users().GetLoginByEmailAsync(command.Login);
             if (login == null )
             {
@@ -27,7 +27,7 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidato
             RuleFor().Password().IsNotBanned(login);
             RuleFor().Password().IsHaveAttempts(login);
 
-            if (IsInvalid()) return GetErrors();
+            if (IsInvalid) return GetErrors();
 
             RuleFor().User().IsHaveAccess(login.User);
             return GetErrors();

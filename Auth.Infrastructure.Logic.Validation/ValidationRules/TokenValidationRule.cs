@@ -1,11 +1,14 @@
-﻿namespace Auth.Infrastructure.Logic.Validation.ValidationRules
+﻿using Auth.Domain.Core.Data.DBEntity.Account;
+using Auth.Domain.Core.Data.Extensions;
+
+namespace Auth.Infrastructure.Logic.Validation.ValidationRules
 {
-    internal class TokenValidationRule(RegexService regex, Action<ErrorStatus, object[]> action) 
-        : ValidationRule(regex, action), ITokenValidationRule
+    internal class TokenValidationRule(IRegexService regex, Action<ErrorStatus, object[]> action) 
+        : ValidationRule<string>(regex, action), ITokenValidationRule
     {
         public override bool IsLengthFormatValid(string value)
         {
-            if (IsLengthInvalid(value, nameof(UnitOfWorkValidationRule.Token)))
+            if (IsLengthInvalid(value, new Range(6,50)))
                 return false;
 
             return true;
@@ -37,7 +40,7 @@
         {
             if (!IsNotExpiraced(token, expiresTimeInMinutes))
                 return false;
-            if (token.Attempts > 0)
+            if (token.IsHaveAttempts())
                 return true;
             AddError(ErrorStatus.NoAttempts);
             return false;
@@ -54,8 +57,8 @@
                 AddError(ErrorStatus.AlreadyConfirmed);
                 return false;
             }
-            var time = (token.CreationDate.AddMinutes(expiresTimeInMinutes) - DateTimeExtension.Get()).TotalSeconds;
-            if (time > 10)
+            var expireInSeconds = (token.DateAt.AddMinutes(expiresTimeInMinutes) - DateTimeExtension.Get()).TotalSeconds;
+            if (expireInSeconds > 10)
                 return true;
             AddError(ErrorStatus.AccessDenied);
             return false;

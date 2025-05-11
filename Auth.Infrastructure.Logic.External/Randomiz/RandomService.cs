@@ -39,5 +39,9 @@ namespace Auth.Infrastructure.Logic.External.Randomiz
             }
             return -1;
         }
+        public void Shuffle<T>(T[] values)
+        {
+            Random.Shared.Shuffle(values.AsSpan());
+        }
     }  
 }

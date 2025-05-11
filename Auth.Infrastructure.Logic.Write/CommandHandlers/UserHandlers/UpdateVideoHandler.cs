@@ -6,11 +6,11 @@ using Microsoft.Extensions.Options;
 namespace Auth.Infrastructure.Logic.Write.CommandHandlers.UserHandlers
 {
     internal class UpdateVideoHandler(IOptionsSnapshot<FilesOptions> option,
-        IFileBuilder file) : ICommandHandler<UpdateVideoCommand>
+        IFileBuilder file) : Handler<UpdateVideoCommand>
     {
         private readonly FilesOptions _options = option.Value;
         private readonly IFileBuilder _file = file;
-        public async Task HandleAsync(UpdateVideoCommand command)
+        public override async Task HandleAsync(UpdateVideoCommand command)
         {
             var extension = FileExtension.GetExtension(command.ContentType);
             await _file.ReWriteFileAsync(_options.VideoStorePath, command.UserId.ToFileName(extension), command.File);

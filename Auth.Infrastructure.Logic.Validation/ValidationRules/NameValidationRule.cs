@@ -1,11 +1,11 @@
 ﻿namespace Auth.Infrastructure.Logic.Validation.ValidationRules
 {
-    internal class NameValidationRule(RegexService regex, Action<ErrorStatus, object[]> action) 
-        : ValidationRule(regex, action), INameValidationRule
+    internal class NameValidationRule(IRegexService regex, Action<ErrorStatus, object[]> action) 
+        : ValidationRule<string>(regex, action), INameValidationRule
     {
         public override bool IsLengthFormatValid(string value)
         {
-            if (IsLengthInvalid(value, nameof(UnitOfWorkValidationRule.Name)))
+            if (IsLengthInvalid(value, new Range(2, 32)))
                 return false;
 
             if (_regex.IsNotOnlyNumbersLowercaseUppercaseLatin(value))

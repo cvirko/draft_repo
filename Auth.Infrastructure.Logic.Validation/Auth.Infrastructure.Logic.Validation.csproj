@@ -7,14 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Auth.Domain.Interface.Data.Read\Auth.Domain.Interface.Data.Read.csproj" />
     <ProjectReference Include="..\Auth.Domain.Interface.Logic.External\Auth.Domain.Interface.Logic.External.csproj" />
     <ProjectReference Include="..\Auth.Domain.Interface.Logic.Read\Auth.Domain.Interface.Logic.Read.csproj" />
+    <ProjectReference Include="..\Library.CommandMediator\Library.CommandMediator.csproj" />
   </ItemGroup>
 
 </Project>

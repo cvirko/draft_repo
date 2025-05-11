@@ -4,6 +4,6 @@ namespace Auth.Domain.Interface.Logic.Notification.Sockets.RabbitMQ
 {
     public interface IRabbitMQConnection: IDisposable
     {
-        public Task<IChannel> AddChannelAsync();
+        public Task<IChannel> AddChannelAsync(CancellationToken stoppingToken = default);
     }
 }

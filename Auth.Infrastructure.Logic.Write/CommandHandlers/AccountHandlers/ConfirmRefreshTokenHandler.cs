@@ -1,19 +1,18 @@
-﻿using Auth.Domain.Core.Common.Exceptions;
-using Auth.Domain.Core.Logic.Commands.Account;
+﻿using Auth.Domain.Core.Logic.Commands.Account;
 
 namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
 {
-    internal class ConfirmRefreshTokenHandler(IUnitOfWork uow, IUnitOfWorkValidationRule uowVRule)
-        : ICommandHandler<ConfirmRefreshTokenCommand>
+    internal class ConfirmRefreshTokenHandler(IUnitOfWork uow, IValidationRuleService validate)
+        : Handler<ConfirmRefreshTokenCommand>
     {
         private readonly IUnitOfWork _uow = uow;
-        private readonly IUnitOfWorkValidationRule _uowValidationRule = uowVRule;
-        public async Task HandleAsync(ConfirmRefreshTokenCommand command)
+        private readonly IValidationRuleService _validate = validate;
+        public override async Task HandleAsync(ConfirmRefreshTokenCommand command)
         {
             var userToken = await _uow.Users()
                 .GetUserTokenAsync(command.UserInfo, command.UserId, TokenType.Refresh);
-            _uowValidationRule.SetFieldName(nameof(command.Token));
-            if (_uowValidationRule.Token().IsMatch(command.Token, userToken))
+            _validate.SetFieldName(nameof(command.Token));
+            if (_validate.Token().IsMatch(command.Token, userToken))
             {
                 userToken.IsConfirmed = true;
             }
@@ -24,8 +23,8 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
 
             await _uow.SaveAsync();
 
-            if (!_uowValidationRule.IsValid())
-                throw new ForbiddenException(_uowValidationRule.GetErrors());
+            if (!_validate.IsValid)
+                _validate.Throw(command.GetType());
         }
     }
 }

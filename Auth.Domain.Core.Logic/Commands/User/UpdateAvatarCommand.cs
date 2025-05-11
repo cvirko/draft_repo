@@ -1,8 +1,14 @@
 ﻿namespace Auth.Domain.Core.Logic.Commands.User
 {
-    public class UpdateAvatarCommand(Stream file, string type) : Command
+    public class UpdateAvatarCommand : Command
     {
-        public Stream Avatar { get; set; } = file;
-        public string ContentType { get; set; } = type;
+        public UpdateAvatarCommand() { }
+        public UpdateAvatarCommand(Stream file, string type)
+        {
+            Avatar = file;
+            ContentType = type;
+        }
+        public Stream Avatar { get; set; } 
+        public string ContentType { get; set; } 
     }
 }

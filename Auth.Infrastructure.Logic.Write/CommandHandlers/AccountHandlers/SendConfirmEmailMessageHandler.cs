@@ -6,12 +6,12 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.AccountHandlers
 {
     internal class SendConfirmEmailMessageHandler(IMailService mail, ITokenBuilder token,
         ICommandDispatcher dispatcher)
-        : ICommandHandler<SendConfirmEmailMessageCommand>
+        : Handler<SendConfirmEmailMessageCommand>
     {
         private readonly IMailService _mail = mail;
         private readonly ITokenBuilder _token = token;
         private readonly ICommandDispatcher _dispatcher = dispatcher;
-        public async Task HandleAsync(SendConfirmEmailMessageCommand command)
+        public override async Task HandleAsync(SendConfirmEmailMessageCommand command)
         {
             var tokenData = _token.CreateNumericToken();
             await _dispatcher.ProcessAsync(

@@ -3,9 +3,9 @@ using Auth.Domain.Interface.Data.Read.Cache;
 
 namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidators
 {
-    internal class SignUpInCacheValidator(IUnitOfWorkValidationRule rule, IUnitOfWorkRead uow,
+    internal class SignUpInCacheValidator(IValidationRuleService validate, IUnitOfWorkRead uow,
         ICacheRepository cache) 
-        : Validator<SignUpInCacheCommand>(rule)
+        : Validator<SignUpInCacheCommand>(validate)
     {
         private readonly IUnitOfWorkRead _uow = uow;
         private readonly ICacheRepository _cache = cache;
@@ -14,7 +14,7 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidato
             RuleFor(p => p.Email).Email().IsLengthFormatValid(command.Email);
             RuleFor(p => p.Password).Password().IsLengthFormatValid(command.Password);
             RuleFor(p => p.UserName).Name().IsLengthFormatValid(command.UserName);
-            if (IsInvalid()) return GetErrors();
+            if (IsInvalid) return GetErrors();
             if (await RuleFor(p => p.Email).Email()
                 .IsNotOccupiedAsync(command.Email, _uow.Users().IsExistEmailAsync))
             {

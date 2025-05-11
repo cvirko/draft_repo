@@ -38,5 +38,9 @@
   {
     "StatusName": "ConfirmMail",
     "Text": "Please confirm mail"
+  },
+  {
+    "StatusName": "InsufficientFunds",
+    "Text": "Insufficient funds {0}"
   }
 ]

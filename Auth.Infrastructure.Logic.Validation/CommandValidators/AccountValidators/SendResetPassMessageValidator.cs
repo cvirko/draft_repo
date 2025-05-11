@@ -4,9 +4,9 @@ using Microsoft.Extensions.Options;
 
 namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidators
 {
-    internal class SendResetPassMessageValidator(IUnitOfWorkValidationRule rule, IUnitOfWorkRead uow,
+    internal class SendResetPassMessageValidator(IValidationRuleService validate, IUnitOfWorkRead uow,
         IOptionsSnapshot<MailOptions> options) 
-        : Validator<SendResetPassMessageCommand>(rule)
+        : Validator<SendResetPassMessageCommand>(validate)
     {
         private readonly IUnitOfWorkRead _uow = uow;
         private readonly MailOptions _mailOptions = options.Value;
@@ -14,13 +14,13 @@ namespace Auth.Infrastructure.Logic.Validation.CommandValidators.AccountValidato
         {
             RuleFor(p => p.Email).Email().IsLengthFormatValid(command.Email);
 
-            if (IsInvalid()) return GetErrors();
+            if (IsInvalid) return GetErrors();
             var login = await _uow.Users().GetLoginByEmailAsync(command.Email);
             if (!RuleFor(p => p.Email).Email().IsExist(login))
                 return GetErrors();
 
-            var token = await _uow.Users().GetUserTokenAsync(login.UserId, TokenType.Reset);
-            RuleFor(p => p.Email).Email().IsDelayGone(command.Email, token?.CreationDate, _mailOptions.DelayBetweenMessagesInMinutes);
+            var token = await _uow.Users().GetUserTokenAsync(command.UserInfo, login.UserId, TokenType.Reset);
+            RuleFor(p => p.Email).Email().IsDelayGone(command.Email, token?.DateAt, _mailOptions.DelayBetweenMessagesInMinutes);
 
             return GetErrors();
         }
