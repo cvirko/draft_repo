@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /Auth.Api/appsettings.Development.json
 /Auth.Api/wwwroot/Files/Images/Avatars
 /Auth.Client.ConsoleApp/appsettings.Development.json
+/Auth.Api/wwwroot/Files/Video/Users
