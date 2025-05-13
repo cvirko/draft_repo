@@ -2,6 +2,7 @@
 {
     public interface IImageService
     {
-        byte[] ReSizePng(Stream file, int width = 512, int height = 512);
+        byte[] ReSizePng(Stream file, int width = 512);
+        Task<byte[]> ReSizePngAsync(Stream file, int width = 512);
     }
 }

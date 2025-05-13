@@ -6,5 +6,6 @@
         public static TimeSpan RemainingTime(this DateTime date) => date - Get();
         public static DateTime Get() => DateTime.UtcNow;
         public static DateTime WithMinutes(float minutes) => Get().AddMinutes(minutes);
+        public static DateTime WithDays(float days) => Get().AddDays(days);
     }
 }

@@ -48,7 +48,9 @@ namespace Auth.Api.Configuration
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(webRootPath, option.AvatarsStorePath)),
-                RequestPath = AppConsts.AVATARS_PATH
+                RequestPath = AppConsts.AVATARS_PATH,
+                OnPrepareResponse = fileResponse => 
+                    fileResponse.Context.Response.CacheStoreDays(30)
             });
 
             app.UseStaticFiles(new StaticFileOptions
@@ -63,6 +65,7 @@ namespace Auth.Api.Configuration
                         ctx.Context.Response.StatusCode = 401;
                         ctx.Context.Response.ContentLength = 0;
                         ctx.Context.Response.Body = Stream.Null;
+                        ctx.Context.Response.CacheStoreDays(30);
                     }
                 }
             }

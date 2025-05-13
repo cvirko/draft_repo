@@ -12,11 +12,10 @@ namespace Auth.Infrastructure.Logic.Write.CommandHandlers.UserHandlers
         private readonly IImageService _image = image;
         private readonly FilesOptions _options = option.Value;
         private readonly IFileBuilder _file = file;
-        public override Task HandleAsync(UpdateAvatarCommand command)
+        public override async Task HandleAsync(UpdateAvatarCommand command)
         {
-            var avatar = _image.ReSizePng(command.Avatar);
+            var avatar = await _image.ReSizePngAsync(command.Avatar);
             _file.ReWriteFile(_options.AvatarsStorePath, command.UserId.ToFileName(), avatar);
-            return Task.CompletedTask;
         }
     }
 }

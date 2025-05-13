@@ -31,6 +31,7 @@ namespace Auth.Api.Controllers.Read
         [HttpGet]
         public async Task<ActionResult> GetAvatar()
         {
+            Response.CacheStoreDays(30);
             return await GetAvatar(User.GetUserId());
         }
         [Authorize(AuthConsts.IS_USER)]
@@ -40,6 +41,7 @@ namespace Auth.Api.Controllers.Read
         {
             var avatar = await _file.ReadFileAsync(_options.AvatarsStorePath, userId.ToFileName());
             if (avatar == null) return NoContent();
+            Response.CacheStoreDays(30);
             return File(avatar, MIMEType.Png);
         }
         [Authorize(AuthConsts.IS_USER)]
@@ -50,6 +52,7 @@ namespace Auth.Api.Controllers.Read
             var info = _file.GetInfo(_options.VideoStorePath, User.GetUserId().ToString());
             if (info is null)
                 return NoContent();
+            Response.CacheStoreDays(30);
             return File(
                 info.FilePath,
                 info.ContentType,
