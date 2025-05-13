@@ -109,22 +109,26 @@ namespace Auth.Infrastructure.Data
 
         private static IServiceCollection AddSqlOrInMemory<T>(this IServiceCollection services, bool isDevelopment, string database) where T : BaseDBContext
         {
+            const string connectErrorFormat = "{0}  {1} connection string!!!";
+            const string switchToMemory = "Switching to the memory database";
+            var typeName = typeof(T).Name;
+
             if (string.IsNullOrEmpty(database))
             {
-                ConsoleExtension.Errors("No database connection string!!!");
+                ConsoleExtension.Errors(string.Format(connectErrorFormat,"No", typeName));
                 if (!isDevelopment)
-                    throw new ArgumentNullException("No database connection string");
-                ConsoleExtension.Errors("Switching to the memory database");
-                return AddSqlInMemory<T>(services, isDevelopment, typeof(T).Name);
+                    throw new ArgumentNullException(string.Format(connectErrorFormat, "No", typeName));
+                ConsoleExtension.Errors(switchToMemory);
+                return AddSqlInMemory<T>(services, isDevelopment, typeName);
             }
             if (IsDatabaseConnectionAvailable(database))
                 return AddSqlServer<T>(services, isDevelopment, database);
 
-            ConsoleExtension.Errors("Invalid database connection string!!!");
+            ConsoleExtension.Errors(string.Format(connectErrorFormat, "Invalid", typeName));
             if (!isDevelopment)
-                throw new InvalidDataException("Invalid database connection string!");
-            ConsoleExtension.Errors("Switching to the memory database");
-            return AddSqlInMemory<T>(services, isDevelopment, typeof(T).Name);
+                throw new InvalidDataException(string.Format(connectErrorFormat, "Invalid", typeName));
+            ConsoleExtension.Errors(switchToMemory);
+            return AddSqlInMemory<T>(services, isDevelopment, typeName);
         }
         private static IServiceCollection AddSqlInMemory<T>(this IServiceCollection services, bool isDevelopment, string database) where T : BaseDBContext
         {

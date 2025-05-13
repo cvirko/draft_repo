@@ -7,6 +7,7 @@
         public string Password { get; set; }
         public string ProvidedName { get; set; }
         public ushort ChannelsMax { get; set; }
+        public bool IsUseListener { get; set; }
     }
     public class Host
     {

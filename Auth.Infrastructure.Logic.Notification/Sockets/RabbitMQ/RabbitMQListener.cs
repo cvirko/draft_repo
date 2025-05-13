@@ -1,17 +1,22 @@
 ﻿using Auth.Domain.Core.Common.Extensions;
+using Auth.Domain.Core.Common.Tools.Configurations;
 using Auth.Domain.Interface.Logic.Notification.Sockets.RabbitMQ;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 namespace Auth.Infrastructure.Logic.Notification.Sockets.RabbitMQ
 {
-    internal class RabbitMQListener(IRabbitMQConnection connection) : IRabbitMQListener
+    internal class RabbitMQListener(IRabbitMQConnection connection,
+        IOptions<RabbitMQOptions> options) : IRabbitMQListener
     {
         private readonly IRabbitMQConnection _connection = connection;
-
+        private readonly RabbitMQOptions _options = options.Value;
         public async Task ReceiveAsync<T>(string queue, Func<T,Task> operationAsync, CancellationToken stoppingToken)
         {
+            if (!_options.IsUseListener)
+                return;
             var chanel = await _connection.AddChannelAsync(stoppingToken);
             await chanel.QueueDeclareAsync(queue: queue, 
                 durable: true, exclusive: false, autoDelete: false, arguments: null,cancellationToken: stoppingToken);
